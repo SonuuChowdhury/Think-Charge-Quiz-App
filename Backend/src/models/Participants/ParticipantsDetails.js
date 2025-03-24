@@ -7,13 +7,14 @@ const ParticipantsDetailsSchema = new mongoose.Schema({
   teamName: { type: String, required: true }, 
   mobile: { type: Number, required: true }, 
   password: { type: String, required: true },
-  LastLogin: { type: Date, default: Date.now()}, 
+  LastLogin: { type: Date, default: null}, 
+  joined: { type: Date, default: Date.now()},
   teamMembers: [
     {
       name: { type: String, required: true },
       department: { type: String, required: true },
       sem: { type: Number, required: true },
-      gender: { type: String, enum: ['Male', 'Female', 'Other'], required: true },
+      gender: { type: String, enum: ['Male', 'Female'], required: true },
       role: { type: String, required: true }
     }
   ]

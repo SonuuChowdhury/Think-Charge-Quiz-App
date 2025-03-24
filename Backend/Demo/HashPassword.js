@@ -12,5 +12,6 @@ async function hashPassword(password) {
     }
 }
 
-// Example Usage:
-hashPassword("admin@password").then(console.log);
+export default hashPassword
+
+// hashPassword("admin@password").then(console.log);
