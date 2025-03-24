@@ -12,9 +12,14 @@ import AddParticipant from "../api/Master Admin/AddParticipants.js";
 import DeleteParticipant from "../api/Master Admin/DeletePartcipants.js";
 import GetLockOpenKey from "../api/Master Admin/GetLockOpenKey.js";
 
+
+// Participants Task 
+import VerifyLockOpenKey from "../api/Participants/Security/LockOpenKeyVerifcation.js";
+
 const router = Router();
 
 // Participants Routes
+router.get('/verify-key/:key',VerifyLockOpenKey)
 
 // Admin Login 
 router.post('/login/admin',getAdminCredentials)
