@@ -15,6 +15,8 @@ import GetLockOpenKey from "../api/Master Admin/GetLockOpenKey.js";
 
 // Attendnace Admin Task 
 import MarkTeamPresent from "../api/Attendnace Admin/MarkPresent.js";
+import DeleteOneAttendance from "../api/Attendnace Admin/DeleteOneAttendance.js";
+import ResetAttendance from "../api/Attendnace Admin/ResetAttendance.js";
 
 // Participants Task 
 import VerifyLockOpenKey from "../api/Participants/Security/LockOpenKeyVerifcation.js";
@@ -38,6 +40,8 @@ router.post('/edit-start-time',MasterAdminTokenVerification, EditQuizStartingTim
 
 // Attendance Admin ROutes 
 router.post('/mark-present',AttendaceAdminTokenVerification,MarkTeamPresent)
+router.delete('/delete-one-attendance/:id',AttendaceAdminTokenVerification, DeleteOneAttendance)
+router.delete('/delete-all-attendance', AttendaceAdminTokenVerification, ResetAttendance)
 
 export default router;
 
