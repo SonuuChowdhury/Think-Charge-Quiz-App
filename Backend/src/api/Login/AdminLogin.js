@@ -32,7 +32,7 @@ getAdminCredentials.post('/login/admin', async (req, res) => {
                 return res.status(400).json({msg:'Invalid Password'})
             } 
             const token = await jwt.sign({_id:admin._id, role:admin.role},process.env.JWT_SECRET,{expiresIn:'2h'})
-            return res.status(200).json({token})
+            return res.status(200).json({ token, role: admin.role });
         } catch (error) {
             return res.status(500).json({msg:`error while login: ${error}`})
         }

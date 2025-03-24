@@ -22,7 +22,7 @@ const router = Router();
 
 // Participants Routes
 router.get('/verify-key/:key',VerifyLockOpenKey)
-router.post('/login/partcipant', GetPartcipantsCredentials)
+router.post('/login/participant', GetPartcipantsCredentials)
 
 
 // Admin Login 
