@@ -8,7 +8,7 @@ const ParticipantsDetailsSchema = new mongoose.Schema({
   mobile: { type: Number, required: true }, 
   password: { type: String, required: true },
   LastLogin: { type: Date, default: null}, 
-  joined: { type: Date, default: Date.now()},
+  joined: { type: Date},
   teamMembers: [
     {
       name: { type: String, required: true },

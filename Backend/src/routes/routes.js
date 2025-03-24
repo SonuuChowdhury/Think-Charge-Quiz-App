@@ -13,6 +13,8 @@ import DeleteParticipant from "../api/Master Admin/DeletePartcipants.js";
 import EditQuizStartingTime from "../api/Master Admin/EditQuizStartingTime.js";
 import GetLockOpenKey from "../api/Master Admin/GetLockOpenKey.js";
 
+// Attendnace Admin Task 
+import MarkTeamPresent from "../api/Attendnace Admin/MarkPresent.js";
 
 // Participants Task 
 import VerifyLockOpenKey from "../api/Participants/Security/LockOpenKeyVerifcation.js";
@@ -33,6 +35,9 @@ router.post('/add-participant', MasterAdminTokenVerification, AddParticipant)
 router.delete('/delete-participants/:id',MasterAdminTokenVerification, DeleteParticipant)
 router.get('/get-key',MasterAdminTokenVerification,GetLockOpenKey)
 router.post('/edit-start-time',MasterAdminTokenVerification, EditQuizStartingTime)
+
+// Attendance Admin ROutes 
+router.post('/mark-present',AttendaceAdminTokenVerification,MarkTeamPresent)
 
 export default router;
 

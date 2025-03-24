@@ -1,0 +1,18 @@
+import mongoose from 'mongoose';
+import connectDB from '../../db/ConnectDB.js';
+
+const { loginCredentialsConnection } = await connectDB();
+
+const AttendanceDetailsLayout = new mongoose.Schema({
+  teamName: { type: String, required: true }, 
+  mobile: { type: Number, required: true },  
+  EnteredOn: { type: Date},
+  isAllPresent:{type:Boolean},
+  PresentMembers: [{ 
+    name: { type: String},
+    role: { type: String }
+  }]
+});
+
+const AttendanceDetailsSchema = loginCredentialsConnection.model('attendancedetails', AttendanceDetailsLayout);
+export default AttendanceDetailsSchema;
