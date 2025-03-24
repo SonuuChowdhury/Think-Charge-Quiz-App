@@ -10,6 +10,7 @@ import AttendaceAdminTokenVerification from "../middlewares/AttendanceAdminToken
 // Master Admin Tasks
 import AddParticipant from "../api/Master Admin/AddParticipants.js";
 import DeleteParticipant from "../api/Master Admin/DeletePartcipants.js";
+import EditQuizStartingTime from "../api/Master Admin/EditQuizStartingTime.js";
 import GetLockOpenKey from "../api/Master Admin/GetLockOpenKey.js";
 
 
@@ -23,6 +24,7 @@ const router = Router();
 router.get('/verify-key/:key',VerifyLockOpenKey)
 router.post('/login/partcipant', GetPartcipantsCredentials)
 
+
 // Admin Login 
 router.post('/login/admin',getAdminCredentials)
 
@@ -30,7 +32,7 @@ router.post('/login/admin',getAdminCredentials)
 router.post('/add-participant', MasterAdminTokenVerification, AddParticipant)
 router.delete('/delete-participants/:id',MasterAdminTokenVerification, DeleteParticipant)
 router.get('/get-key',MasterAdminTokenVerification,GetLockOpenKey)
-
+router.post('/edit-start-time',MasterAdminTokenVerification, EditQuizStartingTime)
 
 export default router;
 
