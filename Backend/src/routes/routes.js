@@ -10,6 +10,7 @@ import AttendaceAdminTokenVerification from "../middlewares/AttendanceAdminToken
 // Master Admin Tasks
 import AddParticipant from "../api/Master Admin/AddParticipants.js";
 import DeleteParticipant from "../api/Master Admin/DeletePartcipants.js";
+import GetLockOpenKey from "../api/Master Admin/GetLockOpenKey.js";
 
 const router = Router();
 
@@ -21,6 +22,7 @@ router.post('/login/admin',getAdminCredentials)
 // Master admin Routes
 router.post('/add-participant', MasterAdminTokenVerification, AddParticipant)
 router.delete('/delete-participants/:id',MasterAdminTokenVerification, DeleteParticipant)
+router.get('/get-key',MasterAdminTokenVerification,GetLockOpenKey)
 
 
 export default router;

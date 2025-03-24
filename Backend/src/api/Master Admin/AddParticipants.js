@@ -1,6 +1,7 @@
 import express from 'express';
 import ParticipantsDetails from '../../models/Participants/ParticipantsDetails.js';
 import hashPassword from '../../../Demo/HashPassword.js';
+import GetCureentIST from '../../../Demo/GetCurrentIST.js';
 
 const AddParticipant = express.Router();
 AddParticipant.use(express.json());
@@ -28,17 +29,12 @@ AddParticipant.post('/add-participant', async (req, res) => {
     // Generate password using first 5 digits of mobile + '@password'
     const GenPassword = mobile.toString().slice(0, 5) + "@password";
 
-    // Get current timestamp in Indian Standard Time (IST)
-    const nowUtc = new Date();
-    const istOffset = 5.5 * 60 * 60 * 1000; // Convert 5.5 hours to milliseconds
-    const istTime = new Date(nowUtc.getTime() + istOffset);
-
     // Create new participant entry
     const newParticipant = new ParticipantsDetails({
       teamName,
       mobile,
       password: await hashPassword(GenPassword),
-      joined: istTime.toISOString(),
+      joined: await GetCureentIST(),
       teamMembers,
     });
 
