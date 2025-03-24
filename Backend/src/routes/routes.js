@@ -15,11 +15,13 @@ import GetLockOpenKey from "../api/Master Admin/GetLockOpenKey.js";
 
 // Participants Task 
 import VerifyLockOpenKey from "../api/Participants/Security/LockOpenKeyVerifcation.js";
+import GetPartcipantsCredentials from "../api/Login/PartcipantsLogin.js";
 
 const router = Router();
 
 // Participants Routes
 router.get('/verify-key/:key',VerifyLockOpenKey)
+router.post('/login/partcipant', GetPartcipantsCredentials)
 
 // Admin Login 
 router.post('/login/admin',getAdminCredentials)
