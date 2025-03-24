@@ -17,17 +17,18 @@ import GetLockOpenKey from "../api/Master Admin/GetLockOpenKey.js";
 import MarkTeamPresent from "../api/Attendnace Admin/MarkPresent.js";
 import DeleteOneAttendance from "../api/Attendnace Admin/DeleteOneAttendance.js";
 import ResetAttendance from "../api/Attendnace Admin/ResetAttendance.js";
+import FetchAllAttendanceDetails from "../api/Attendnace Admin/FetchAllDetails.js";
 
 // Participants Task 
 import VerifyLockOpenKey from "../api/Participants/Security/LockOpenKeyVerifcation.js";
 import GetPartcipantsCredentials from "../api/Login/PartcipantsLogin.js";
+
 
 const router = Router();
 
 // Participants Routes
 router.get('/verify-key/:key',VerifyLockOpenKey)
 router.post('/login/participant', GetPartcipantsCredentials)
-
 
 // Admin Login 
 router.post('/login/admin',getAdminCredentials)
@@ -42,6 +43,7 @@ router.post('/edit-start-time',MasterAdminTokenVerification, EditQuizStartingTim
 router.post('/mark-present',AttendaceAdminTokenVerification,MarkTeamPresent)
 router.delete('/delete-one-attendance/:id',AttendaceAdminTokenVerification, DeleteOneAttendance)
 router.delete('/delete-all-attendance', AttendaceAdminTokenVerification, ResetAttendance)
+router.post('/fetch-attendance', AttendaceAdminTokenVerification,FetchAllAttendanceDetails)
 
 export default router;
 
