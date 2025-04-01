@@ -6,7 +6,7 @@ export default function HomePage() {
     <>
       {/* Navbar */}
       <header className="navbar">
-        <img src="/public/removed-bg-logo.png" alt="Think Charge Logo" className="logo" />
+        <img src="/removed-bg-logo.png" alt="Think Charge Logo" className="logo" />
         <button className="login-btn">Login</button>
       </header>
 
