@@ -1,0 +1,191 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+  }
+  
+button{
+    cursor: pointer;
+}
+
+  /* Navbar */
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: #222;
+  }
+  
+  .logo {
+    width: clamp(100px, 10vw, 150px); /* Responsive logo size */
+  }
+  
+
+  
+  .bar {
+    height: 3px;
+    width: clamp(20px, 5vw, 25px); /* Responsive bar size */
+    background-color: #fff;
+    margin: 3px auto;
+  }
+  
+  .nav-links {
+    display: flex;
+  }
+  
+  .nav-links ul {
+    list-style: none;
+    display: flex;
+  }
+  
+  .nav-links li {
+    margin-right: clamp(10px, 2vw, 20px); /* Responsive spacing */
+  }
+  
+  .nav-links a {
+    text-decoration: none;
+    color: #fff;
+  }
+  
+  /* Login Button */
+  .login-btn {
+    background-color: #ff5722;
+    border: none;
+    padding: clamp(0.5rem, 2vw, 1rem) clamp(1rem, 3vw, 2rem);
+    color: #fff;
+  }
+  
+  /* Hero Section */
+  .hero {
+    text-align: center;
+    padding: clamp(3rem, 8vw, 5rem);
+  }
+  
+  .hero-slogan {
+    font-size: clamp(2rem, 5vw, 3rem); /* Fluid typography */
+  }
+  
+  .register-btn {
+    margin-top: clamp(1.5rem, 4vw, 2rem);
+    padding: clamp(0.75rem, 3vw, 1.5rem) clamp(2rem, 6vw, 3rem);
+    background-color: #ff5722;
+  }
+  
+  /* Body Content */
+  .body-content {
+    padding: clamp(1.5rem, 4vw, 2rem);
+  }
+  
+  .event-highlights h2 {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+  }
+  
+  .event-highlights p {
+    margin-top: clamp(0.5rem, 2vw, 1rem);
+  }
+  
+  /* Footer */
+.footer {
+    background-color: #222;
+    padding: 2rem 0;
+    text-align: center;
+  }
+  
+  .footer-details {
+    color: #fff;
+  }
+  
+  /* Portfolio Link in Footer */
+  .portfolio-footer-link {
+    display: inline-block; /* Make it a block for better spacing */
+    margin-top: 1rem; /* Space above the link */
+    padding: clamp(0.5rem, 1vw, 0.75rem) clamp(1rem, 2vw, 1.5rem);
+    background-color: #ff5722; /* Eye-catching background color */
+    color: #fff;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+  }
+  
+  .portfolio-footer-link:hover {
+    background-color: #e64a19; /* Darker shade on hover */
+    transform: scale(1.05); /* Slight zoom effect */
+  }
+  
+  /* Responsive Adjustments */
+  @media (max-width: 768px) {
+    .portfolio-footer-link {
+      width: auto; /* Ensure proper button sizing on smaller screens */
+      text-align: center;
+      font-size: clamp(0.9rem, 4vw, 1.1rem);
+      padding: clamp(0.5rem, 3vw, 1rem) clamp(1rem, 6vw, 2rem);
+    }
+
+    .footer-details p {
+        font-size: 0.7rem;
+
+    }
+  }
+  
+  
+/* Hero Section */
+.hero {
+    text-align: center;
+    padding: clamp(3rem, 8vw, 5rem);
+    background-color: #f4f4f4;
+    position: relative; /* For positioning background images or effects */
+  }
+  
+  .hero-slogan {
+    font-size: clamp(2rem, 5vw, 3rem); /* Fluid typography */
+    color: #333; /* Darker color for better readability */
+  }
+  
+  .hero-description {
+    margin-top: 1rem;
+    font-size: clamp(1.2rem, 3vw, 1.5rem); /* Responsive font size */
+    color: #666; /* Lighter color for contrast */
+    max-width: 800px; /* Limit width for better readability */
+    margin-left: auto;
+    margin-right: auto; /* Center align description */
+  }
+  
+  .hero-buttons {
+    margin-top: 2rem; /* Space between buttons and description */
+  }
+  
+  .register-btn {
+    margin-right: 1rem; /* Space between buttons */
+    padding: clamp(0.75rem, 3vw, 1.5rem) clamp(2rem, 6vw, 3rem);
+    background-color: #ff5722;
+  }
+  
+  .learn-more-btn {
+    margin-top: 0.9rem;
+    margin-left: 1rem;
+    display: inline-block; /* Make it a block for better spacing */
+    padding: clamp(0.75rem, 3vw, 1.5rem) clamp(2rem, 6vw, 3rem);
+    background-color: #007bff; /* Blue color for 'Learn More' button */
+    color: #fff;
+    border-radius: 5px;
+    text-decoration: none;
+  }
+  
+  .learn-more-btn:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+  }
+  
+  /* Responsive Adjustments */
+  @media (max-width: 768px) {
+   .hero-description {
+     font-size: clamp(1rem, 4vw, 1.2rem); /* Smaller font size on mobile */
+   }
+  }
+  
