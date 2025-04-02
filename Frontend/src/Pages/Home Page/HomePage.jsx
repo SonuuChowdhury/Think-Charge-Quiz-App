@@ -1,13 +1,15 @@
 import './HomePage.css';
+import { useNavigate } from 'react-router-dom';
 
 export default function HomePage() {
+  const Navigate= useNavigate();
 
   return (
     <>
       {/* Navbar */}
       <header className="navbar">
         <img src="/removed-bg-logo.png" alt="Think Charge Logo" className="logo" />
-        <button className="login-btn">Login</button>
+        <button className="login-btn" onClick={()=>Navigate("/login")}>Login</button>
       </header>
 
       {/* Hero Section */}

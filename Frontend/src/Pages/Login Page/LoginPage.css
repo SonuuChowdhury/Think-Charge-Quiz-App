@@ -1,0 +1,197 @@
+/* General Styles */
+.LoginPageContainer {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  /* Login Container */
+  .login-container {
+    background: #ffffff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  /* Form Styles */
+  .login-form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  label {
+    font-size: 1rem;
+    font-weight: 500;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  
+  input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: border 0.3s ease-in-out;
+  }
+  
+  input:focus {
+    border-color: #007bff;
+    outline: none;
+  }
+  
+  /* Password Input Container */
+  .password-input-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  
+  .toggle-password {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: #007bff;
+  }
+  
+  .toggle-password:hover {
+    color: #0056b3;
+  }
+  
+  /* Error Messages */
+  .error {
+    border-color: #ff4d4d !important;
+  }
+  
+  .error-message {
+    color: #ff4d4d;
+    font-size: 0.875rem;
+    margin-top: 0.3rem;
+  }
+  
+  /* Button Group */
+  .button-group {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .primary-btn, .secondary-btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .primary-btn {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .primary-btn:hover {
+    background-color: #0056b3;
+  }
+  
+  .primary-btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+  
+  .secondary-btn {
+    background-color: #ff4d4d;
+    color: white;
+  }
+  
+  .secondary-btn:hover {
+    background-color: #d43f3f;
+  }
+  
+  /* Responsive Styles */
+  @media (max-width: 480px) {
+    .login-container {
+      padding: 1.5rem;
+    }
+    
+    .primary-btn, .secondary-btn {
+      width: 100%;
+      margin-bottom: 0.5rem;
+    }
+  
+    .button-group {
+      flex-direction: column;
+    }
+  }
+
+
+  .login-form {
+    width: 100%;
+    min-width: 300px; /* Ensures it doesn't shrink below this width */
+  }
+  
+
+  .errorBox{
+    width: 80%;
+    height: auto;
+    border: 1px solid black;
+    border-radius: 3px;
+    background-color: #823030;
+    color: white;
+    align-self: center;
+    margin-bottom: 1rem;
+    padding-top: 0.4rem;
+    padding-bottom: 0.4rem;
+    text-align: center;
+  }
+
+
+  .AdminLoginButton {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+  }
+  
+  .AdminLoginButton:hover {
+    background: linear-gradient(135deg, #2575fc, #6a11cb);
+    transform: scale(1.05);
+  }
+  
+  .AdminLoginButton:active {
+    transform: scale(0.98);
+  }
+  
+  @media (max-width: 600px) {
+    .AdminLoginButton {
+      padding: 10px 16px;
+      font-size: 14px;
+      top: 15px;
+      right: 15px;
+    }
+  }
+  
