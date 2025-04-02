@@ -96,7 +96,7 @@ export default function AdminLoginPage() {
             <div className="form-group">
               <label htmlFor="mobile">UID</label>
               <input
-                type="tel"
+                type="text"
                 id="mobile"
                 name="mobile"
                 value={formData.mobile}
