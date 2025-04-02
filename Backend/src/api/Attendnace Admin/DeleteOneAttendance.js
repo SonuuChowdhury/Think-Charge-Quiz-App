@@ -4,16 +4,16 @@ import AttendanceDetailsSchema from '../../models/Participants/AttendanceDetails
 const DeleteOneAttendance = express.Router();
 DeleteOneAttendance.use(express.json());
 
-DeleteOneAttendance.delete('/delete-one-attendance/:id', async (req, res) => {
+DeleteOneAttendance.delete('/delete-one-attendance/:mobile', async (req, res) => {
   try {
-    const { id } = req.params;
+    const mobile = Number(req.params.mobile);
 
-    if (!id) {
-      return res.status(400).json({ msg: "Attendance ID is required" });
+    if (!mobile) {
+      return res.status(400).json({ msg: "Valid mobile number is required" });
     }
 
-    // Find and delete the attendance record
-    const deletedAttendance = await AttendanceDetailsSchema.findByIdAndDelete(id);
+    // Find and delete the attendance record by mobile number
+    const deletedAttendance = await AttendanceDetailsSchema.findOneAndDelete({ mobile });
 
     if (!deletedAttendance) {
       return res.status(404).json({ msg: "Attendance record not found" });
@@ -25,9 +25,6 @@ DeleteOneAttendance.delete('/delete-one-attendance/:id', async (req, res) => {
     });
 
   } catch (error) {
-    if (error.name === 'CastError') {
-      return res.status(400).json({ msg: "Invalid ID format" });
-    }
     return res.status(500).json({ msg: "Server Error", error: error.message });
   }
 });
