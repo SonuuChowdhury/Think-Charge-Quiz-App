@@ -1,8 +1,18 @@
 import './HomePage.css';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 export default function HomePage() {
   const Navigate= useNavigate();
+
+  useEffect(() => {
+    const removeRolesAndTokens = () => {
+        localStorage.removeItem("admin-token");
+        localStorage.removeItem("admin-role");
+    };
+    removeRolesAndTokens();
+}, []);
+
 
   return (
     <>

@@ -16,6 +16,17 @@ export default function AdminLoginPage() {
   const [showPassword, setShowPassword] = useState(false); // State for showing/hiding password
   const [showingError, setShowingError] = useState(false)
 
+  useEffect(() => {
+    const removeRolesAndTokens = () => {
+        localStorage.removeItem("admin-token");
+        localStorage.removeItem("admin-role");
+    };
+    removeRolesAndTokens();
+}, []);
+
+
+  
+
   // Validation rules
   const validateField = (name, value) => {
     switch (name) {
