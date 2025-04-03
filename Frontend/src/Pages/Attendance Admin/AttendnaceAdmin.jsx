@@ -18,6 +18,14 @@ export default function AttendanceAdminPage() {
   const [isScanning, setIsScanning] = useState(false);
   const [scannedData, setScannedData] = useState(null);
 
+  useEffect(() => {
+    if(!isScanning){
+      setScannedData(null)
+      setFile(null)
+    }
+  }, [isScanning])
+
+
   const handleFileChange = async (e) => {
     if (e.target.files.length > 0) {
       const imageFile = e.target.files[0];

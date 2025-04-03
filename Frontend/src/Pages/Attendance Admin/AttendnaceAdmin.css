@@ -124,9 +124,10 @@
   
 
 .ScannerQRImage{
-    width: 50%;
     height: 8rem;   
     margin-left: 2rem;
+    align-self: center;
+    margin-right: 1rem;
 }
   .ScannerControl{
     width: 50%;
@@ -139,6 +140,7 @@
 
 .ScannerControlAddButton{
     padding: 0.5rem 1rem 0.5rem 1rem;
+    background-color: bisque;
 }
 
 .ScannerAreaImageAddArea{
@@ -158,4 +160,8 @@
 
 #qrinput{
     display: none;
+}
+
+.ScannerControlMobile{
+    font-size: 0.9rem;
 }
