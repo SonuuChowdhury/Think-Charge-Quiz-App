@@ -1,0 +1,127 @@
+.master-admin-nav{
+    width: 100%;
+    height: auto;
+    background-color: azure;
+    display: flex;
+    align-items: center;
+    justify-content:space-between;
+    padding-bottom:0.8rem;
+    padding-top: 0.8rem;
+    border: 2px solid black;
+}
+
+.nav-brand{
+    margin-left: 1.1rem;
+}
+
+.logout-button{
+    margin-right:2rem ;
+    padding: 1rem;    
+    font-weight: bold;
+    color: white;
+    background-color: rgb(245, 33, 33);
+}
+
+.ControlSectionAttendanceAdmin {
+    width: 100%;
+    display: flex;
+    justify-content: center; /* Centers buttons horizontally */
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap; /* Ensures wrapping if needed */
+    padding: 0.8rem 1rem;
+}
+
+.ControlSectionAttendanceAdminLeft {
+    display: flex;
+    gap: 0.5rem;
+}
+
+
+
+/* General Button Styles */
+.ControlSectionAttendanceAdmin button {
+    padding: 0.7rem 1.2rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap; /* Prevents text from breaking */
+    transition: all 0.3s ease-in-out;
+}
+
+/* Refresh Button - Blue */
+.RefreshButton {
+    background-color: #007bff;
+    color: white;
+}
+
+.RefreshButton:hover {
+    background-color: #0056b3;
+}
+
+/* Reset Button - Red */
+.ResetButton {
+    background-color: #dc3545;
+    color: white;
+}
+
+.ResetButton:hover {
+    background-color: #a71d2a;
+}
+
+/* Scan QR Button - Green */
+.ScanQRButton {
+    background-color: #28a745;
+    color: white;
+}
+
+.ScanQRButton:hover {
+    background-color: #1e7e34;
+}
+
+/* Responsive Adjustments */
+@media screen and (max-width: 600px) {
+    .ControlSectionAttendanceAdmin {
+        justify-content: center; /* Ensures buttons remain in a row */
+    }
+
+    .ControlSectionAttendanceAdminLeft {
+        flex-wrap: wrap; /* Allows wrapping if buttons overflow */
+        justify-content: center;
+    }
+
+    .ControlSectionAttendanceAdmin button {
+        flex: 1; /* Makes buttons flexible and evenly spaced */
+        max-width: fit-content;
+    }
+
+    .nav-brand{
+        font-size: 0.5rem;
+    }
+
+    .logout-button{
+        font-size: 0.5rem;
+        margin-right: 0.3rem;
+    }
+    
+}
+
+
+.ScannerArea {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh; /* Adjust as needed */
+    width: 100%;
+    background-color: #f0f0f0; /* Optional for visibility */
+  }
+  
+  
+
+
+

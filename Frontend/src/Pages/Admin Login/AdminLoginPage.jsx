@@ -111,6 +111,7 @@ export default function AdminLoginPage() {
                 id="mobile"
                 name="mobile"
                 value={formData.mobile}
+                disabled={isSubmitting}
                 onChange={handleInputChange}
                 className={errors.mobile ? "error" : ""}
                 aria-describedby={errors.mobile && "mobile-error"}
@@ -130,6 +131,7 @@ export default function AdminLoginPage() {
                   id="password"
                   name="password"
                   value={formData.password}
+                  disabled={isSubmitting}
                   onChange={handleInputChange}
                   className={errors.password ? "error" : ""}
                   aria-describedby={errors.password && "password-error"}

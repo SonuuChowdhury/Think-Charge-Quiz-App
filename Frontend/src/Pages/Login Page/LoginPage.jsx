@@ -97,6 +97,7 @@ export default function LoginPage() {
             id="mobile"
             name="mobile"
             value={formData.mobile}
+            disabled={isSubmitting}
             onChange={handleInputChange}
             className={errors.mobile ? 'error' : ''}
             aria-describedby={errors.mobile && "mobile-error"}
@@ -114,6 +115,7 @@ export default function LoginPage() {
             <input
               type={showPassword ? 'text' : 'password'} // Toggle between text and password
               id="password"
+              disabled={isSubmitting}
               name="password"
               value={formData.password}
               onChange={handleInputChange}
