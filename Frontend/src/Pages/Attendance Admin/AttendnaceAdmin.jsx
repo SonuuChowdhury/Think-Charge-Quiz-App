@@ -23,6 +23,7 @@ export default function AttendanceAdminPage() {
   const [isScanning, setIsScanning] = useState(false);
   const [scannedData, setScannedData] = useState(null);
   const [fetchedDataAfterQR, setFetchedDataAfterQR] = useState({})
+  const [PresentMembers, setPresentMembers] = useState([])
   const [isAllPresent, setIsAllPresent] = useState(false)
   const [isselectingMemebrLists, setselectingMemebrLists] = useState(false)
   const [Refresh, setRefresh] = useState(false)
@@ -34,6 +35,52 @@ export default function AttendanceAdminPage() {
     }
   }, [isScanning])
 
+  const handleCheckboxChange = (event) => {
+    const { value, checked } = event.target;
+
+    if (checked) {
+      // Add the participant to PresentMembers
+      setPresentMembers((prev) => [...prev, value]);
+    } else {
+      // Remove the participant from PresentMembers
+      setPresentMembers((prev) => prev.filter((member) => member !== value));
+    }
+  };
+
+  const AddAttendance= async()=>{
+    try{
+      setIsLoading(true)
+      const token = localStorage.getItem("admin-token");
+      if (!token) throw new Error("No admin token found!");
+      const response = await axios.post(
+        "https://think-charge-quiz-app.onrender.com/mark-present",
+        {
+          "teamName":fetchedDataAfterQR.teamName,
+          "isAllPresent":isAllPresent,
+          "mobile":scannedData,
+          "PresentMembers":PresentMembers
+        },
+        { headers: { "scee-event-admin-token": token } }
+        );
+      if(response.status==201){
+        setselectingMemebrLists(false)
+        setIsAllPresent(false)
+        setFetchedDataAfterQR({})
+        setScannedData(null)
+        setIsScanning(false)
+        setFile(null)
+        setIsViewingTeamList(false)
+        setRefresh((val)=>!val)
+      }else{
+        alert("Failed to Mark Attendance.");
+      }
+  }catch(err){
+    console.log(err)
+    alert("Failed to Mark Attendance or May be Attendace Already Marked. Check and Try Again!");
+
+  }finally{
+    setIsLoading(false)
+  }}
 
   const handleFileChange = async (e) => {
     if (e.target.files.length > 0) {
@@ -71,8 +118,6 @@ export default function AttendanceAdminPage() {
   
 
   useEffect(() => {
-    console.log(participantDetails);
-  
     // Sort the array based on the enteredOn field (most recent first)
     const sortedParticipants = [...participantDetails].sort((a, b) => {
       const dateA = a.enteredOn ? new Date(a.enteredOn) : new Date(0); // Handle null dates
@@ -237,16 +282,22 @@ const SelctingMemebrsList = ()=>{
       <span>{scannedData}</span>
       <div className='TeamSelectingMembersAllPresentChoice'>
         <span>All Present: </span>
-        <input class="switch" type="checkbox" checked={isAllPresent} onChange={()=>{setIsAllPresent((val)=>!val)}}></input>
+        <input className="switch" type="checkbox" checked={isAllPresent} onChange={()=>{setIsAllPresent((val)=>!val)}}></input>
       </div>
       {isAllPresent?null:(
         fetchedDataAfterQR.membersList.map((data,index)=>(<div className="MemebersListItem">
-            <input className='MemebersListItemCheckBox' type="checkbox" value={data}/>
+            <input
+              className="MemebersListItemCheckBox"
+              type="checkbox"
+              value={data}
+              onChange={handleCheckboxChange}
+              checked={PresentMembers.includes(data)}
+            />
             <span>{data}</span>
         </div>
         ))
       )}
-      <button className='MemebersListItemDoneButton'>
+      <button className='MemebersListItemDoneButton' onClick={AddAttendance}>
         Done
       </button>
     </div>
@@ -273,11 +324,13 @@ const SelctingMemebrsList = ()=>{
           <button className="RefreshButton" onClick={() => setRefresh((val)=>!val)}>
             Refresh <FontAwesomeIcon icon={faArrowsRotate} />
           </button>
-          <button className='ResetButton'>
+          <button className='ResetButton' onClick={ResetAttendance}>
             Reset <FontAwesomeIcon icon={faTrash} />
           </button>
         </div>
-        <button className='ScanQRButton' onClick={() => setIsScanning((val)=>!val)}>
+        <button className='ScanQRButton' onClick={() => {
+          setIsScanning((val)=>!val)
+          setFetchedDataAfterQR({})}}>
         {isScanning ? "Cancel" : <span>Scan <FontAwesomeIcon icon={faQrcode} /></span>}
         </button>
       </div>
@@ -296,7 +349,11 @@ const SelctingMemebrsList = ()=>{
             {scannedData} 
           </span>
           <span>{fetchedDataAfterQR.teamName}</span>
-          <button className="ScannerControlAddButton" disabled={!file} onClick={()=>setselectingMemebrLists(true)}>
+          <button className="ScannerControlAddButton" disabled={!file} onClick={()=>{
+            setselectingMemebrLists(true)
+            setPresentMembers([])
+            setIsAllPresent(false)
+          }}>
             ADD
           </button>
         </div>
