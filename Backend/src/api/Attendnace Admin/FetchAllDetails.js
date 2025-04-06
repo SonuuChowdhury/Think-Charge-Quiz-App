@@ -28,10 +28,12 @@ FetchAllAttendanceDetails.post('/fetch-attendance', async (req, res) => {
       let presentMembers = [];
       let absentMembers = [...teamMembers];
       let isPresent = false; // Initialize isPresent as false
+      let enteredOn = null; // Default value for EnteredOn
 
       if (attendanceEntry) {
         isPresent = true; // Mark as present if attendance entry exists
         status = attendanceEntry.isAllPresent ? 'All Present' : 'Partial Present';
+        enteredOn = attendanceEntry.EnteredOn; // Extract EnteredOn field
 
         if (attendanceEntry.isAllPresent) {
           presentMembers = [...teamMembers];
@@ -54,7 +56,7 @@ FetchAllAttendanceDetails.post('/fetch-attendance', async (req, res) => {
         mobile: team.mobile,
         status,
         isPresent, // Add the isPresent field
-        EnteredOn,
+        enteredOn, // Include EnteredOn field in the response
         presentCount: presentMembers.length,
         absentCount: absentMembers.length,
         presentMembers: presentMembers.map(m => ({
