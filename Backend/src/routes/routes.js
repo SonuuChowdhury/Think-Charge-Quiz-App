@@ -3,6 +3,7 @@ import { Router } from "express";
 import getAdminCredentials from "../api/Login/AdminLogin.js";
 
 
+
 // Middlewares 
 import MasterAdminTokenVerification from "../middlewares/MasterAdminTokenVerification.js";
 import AttendaceAdminTokenVerification from "../middlewares/AttendanceAdminTokenVerify.js";
@@ -17,6 +18,7 @@ import GetLockOpenKey from "../api/Master Admin/GetLockOpenKey.js";
 import MarkTeamPresent from "../api/Attendnace Admin/MarkPresent.js";
 import DeleteOneAttendance from "../api/Attendnace Admin/DeleteOneAttendance.js";
 import ResetAttendance from "../api/Attendnace Admin/ResetAttendance.js";
+import GetTeamDetails from "../api/Attendnace Admin/GetTeamDetials.js";
 import FetchAllAttendanceDetails from "../api/Attendnace Admin/FetchAllDetails.js";
 
 // Participants Task 
@@ -41,6 +43,7 @@ router.post('/edit-start-time',MasterAdminTokenVerification, EditQuizStartingTim
 
 // Attendance Admin ROutes 
 router.post('/mark-present',AttendaceAdminTokenVerification,MarkTeamPresent)
+router.get('/fetch-team/:mobile', AttendaceAdminTokenVerification,GetTeamDetails )
 router.delete('/delete-one-attendance/:id',AttendaceAdminTokenVerification, DeleteOneAttendance)
 router.delete('/delete-all-attendance', AttendaceAdminTokenVerification, ResetAttendance)
 router.post('/fetch-attendance', AttendaceAdminTokenVerification,FetchAllAttendanceDetails)
