@@ -54,6 +54,7 @@ FetchAllAttendanceDetails.post('/fetch-attendance', async (req, res) => {
         mobile: team.mobile,
         status,
         isPresent, // Add the isPresent field
+        EnteredOn,
         presentCount: presentMembers.length,
         absentCount: absentMembers.length,
         presentMembers: presentMembers.map(m => ({
