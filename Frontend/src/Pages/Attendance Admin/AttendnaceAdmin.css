@@ -145,10 +145,17 @@
 
 .ScannerAreaImageAddArea{
     width: 94%;
-    height: 8rem;
+    background-color: #ff9800;
+    margin-top: 1rem;
+    height: 5rem;
+    margin-left: 1rem;
     display: flex;
+    flex-direction: column;
     text-align: center;
-    padding-top: 30%;
+    justify-content: center;
+    border-radius: 5px;
+    border: 3px solid black;
+
     
 }
 
@@ -164,4 +171,309 @@
 
 .ScannerControlMobile{
     font-size: 0.9rem;
+}
+
+.PresentTeamsSectionArea{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 2px solid black;
+    margin-top: 1rem;
+    width: 100vw;
+}
+
+.PresntTeamSectionHeader{
+    font-size: 1rem;
+    border: 1.5px solid burlywood;
+    padding: 5px;
+    border-radius: 4px;
+    margin-bottom: 0.6rem;
+    background-color: aquamarine;
+
+}
+
+.PresentTeamItem{
+    display: flex;
+    font-size: 0.5rem;
+    width: 95%;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    border: 1.5px solid black;
+}
+
+.PresentTeamsListSection{
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.PresentTeamItemLeftPart{
+    width: 45%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding-left: 0.5rem;
+    padding-top: 0.4rem;
+}
+
+.PresentTeamItemLeftPartStatus{
+    border: 1px solid black;
+    border-radius: 3px;
+    text-align: left;
+    padding-left: 2px;
+    padding-top: 2px;
+    width: 90%;
+}
+
+.MarkStatusGreen {
+    background-color: #28a745; /* Vibrant green */
+    color: white; /* White text for better contrast */
+    font-weight: bold; /* Enhances visibility */
+}
+
+.MarkStatusOrange {
+    background-color: #ff9800; /* Bright orange */
+    color: black; /* Black text for readability */
+    font-weight: bold; /* Enhances visibility */
+}
+
+.MarkStatusRed {
+    background-color: #ff4d4d; /* Bright red */
+    color: white; /* White text for better contrast */
+    font-weight: bold; /* Enhances visibility */
+}
+
+.PresentTeamItemLeftPartName{
+    padding-top: 3px;
+
+    font-size: 0.95rem;
+    font-weight: bold;
+}
+
+.PresentTeamItemRightPart{
+    width: 55%;
+    display: flex;
+    flex-direction: column;
+}
+
+.PresentTeamItemRightPartTeamMembersGraphics{
+    width: 100%;
+    height: 2rem;
+    background-color: #0056b3;
+    display: flex;
+    justify-content: center;
+    gap: 1.2rem;
+    align-items: center;
+    font-size: 0.8rem;
+
+}
+
+.PresentTeamItemRightPartButtonSection{
+    padding-top: 0.6rem;
+    width: 100%;
+    height: 55%;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    padding-left: 5px;
+}
+
+.DeleteAttendanceForTeamButton, .ViewAllButton{
+    padding: 0.3rem 0.2rem 0.3rem 0.2rem;
+    font-size: 0.7rem;
+    cursor: pointer;
+    border: none;
+    border-radius: 2px;
+    margin-bottom: 0.3rem;
+    
+}
+
+.ViewAllButton{
+    background-color: #007BFF; /* Vibrant blue */
+    color: white;
+}
+
+.DeleteAttendanceForTeamButton{
+    background-color: #FF4D4D; /* Bright red */
+    color: white; /* White text for contrast */
+}   
+
+
+.presentMembersIcon{
+    color: #19f44c;
+}
+
+.AbsentMembersIcon{
+    color: #f90f26;
+}
+
+.PresentTeamItemLeftPartMobile,.PresentTeamItemLeftPartTime{
+    font-weight: bold;
+    font-size: 0.6rem;
+}
+
+.TeamViewOverlay{
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+}
+
+.TeamViewOverlay{
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(152, 145, 145, 0.6); /* White with 60% transparency */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    position: fixed;
+}
+
+.TeamViewListContainer{
+    width: 80%;
+    height: auto;
+    background-color: white;
+    border-radius: 5px ;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.presentMebersListViewItem, .AbsentMebersListViewItem{
+    display: flex;
+    width: 90%;
+    height: auto;
+    background-color: #19f44c;
+    padding-right: 0.3rem;
+    align-items: center;
+    margin-bottom: 0.4rem;
+    border-radius: 4px;
+    padding-left: 4px;
+    justify-content:space-between;
+}
+
+.TeamViewListContainerRole{
+    padding: 0.05rem 0.2rem 0.05rem 0.2rem;
+    border: 1.3px solid black;
+    background-color: aqua;
+    color: black;
+    font-size: 0.8rem;
+    border-radius: 4px;
+    margin-top: 0.3rem;
+    margin-bottom: 0.3rem;
+}
+
+.AbsentMebersListViewItem{
+    background-color: #f90f26;
+    color: white;
+}
+
+.TeamViewListContainerTeamName{
+    font-size: 1rem;
+    font-weight: bold;
+    margin-top: 0.5rem;
+    margin-bottom: 0.7rem;
+}
+
+@media screen and (min-width: 600px) {
+    .PresentTeamItem{
+        width: 45%;
+    }
+    .PresentTeamsListSection{
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+    }
+}
+
+
+/* From Uiverse.io by Yaya12085 */ 
+.switch {
+    position: relative;
+    height: 1.5rem;
+    width: 3rem;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    border-radius: 9999px;
+    background-color: rgba(100, 116, 139, 0.377);
+    transition: all .3s ease;
+  }
+  
+  .switch:checked {
+    background-color: rgba(236, 72, 153, 1);
+  }
+  
+  .switch::before {
+    position: absolute;
+    content: "";
+    left: calc(1.5rem - 1.6rem);
+    top: calc(1.5rem - 1.6rem);
+    display: block;
+    height: 1.6rem;
+    width: 1.6rem;
+    cursor: pointer;
+    border: 1px solid rgba(100, 116, 139, 0.527);
+    border-radius: 9999px;
+    background-color: rgba(255, 255, 255, 1);
+    box-shadow: 0 3px 10px rgba(100, 116, 139, 0.327);
+    transition: all .3s ease;
+  }
+  
+  .switch:hover::before {
+    box-shadow: 0 0 0px 8px rgba(0, 0, 0, .15)
+  }
+  
+  .switch:checked:hover::before {
+    box-shadow: 0 0 0px 8px rgba(236, 72, 153, .15)
+  }
+  
+  .switch:checked:before {
+    transform: translateX(100%);
+    border-color: rgba(236, 72, 153, 1);
+  }
+
+  .TeamSelectingMembersTeamName{
+    font-size: 1.4rem;
+    font-weight: bold;
+  }
+
+.TeamSelectingMembersAllPresentChoice{
+    display: flex;
+    align-items: center;
+    padding-top: 1rem;
+    gap: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.MemebersListItem{
+    display: flex;
+    height: auto;
+    gap: 1rem;
+    align-items: center;
+    width: 100%;
+    justify-content: flex-start;
+    margin-left: 30%;
+}
+.MemebersListItemCheckBox{
+    width: 1.2rem;
+    height: 1.2rem;
+}
+
+.MemebersListItemDoneButton{
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    padding: 0.7rem 2rem 0.7rem 2rem;
+    border: none;
+    background-color: #19f44c;
+    font-weight: bold;
+    color: white;
+    font-size: 0.9rem;
+    border: 1.5px solid black;
+    border-radius: 4px;
 }
