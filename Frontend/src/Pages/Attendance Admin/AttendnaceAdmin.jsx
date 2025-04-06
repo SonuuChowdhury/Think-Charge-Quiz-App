@@ -99,7 +99,6 @@ export default function AttendanceAdminPage() {
             const response = await axios.get(`https://think-charge-quiz-app.onrender.com/fetch-team/${QRresponse.data}`,{
               headers: { "scee-event-admin-token": token }
             })
-            console.log(response)
             setFetchedDataAfterQR(response.data)
           }catch(err){
             console.log(err)
@@ -156,6 +155,7 @@ export default function AttendanceAdminPage() {
           { headers: { "scee-event-admin-token": token } }
         );
         setParticipantDetails(response.data.reports);
+        console.log(response.data.reports)
       } catch (error) {
         console.error("Error fetching team details:", error);
       }finally{
@@ -236,21 +236,25 @@ export default function AttendanceAdminPage() {
   }
 
   function formatDate(dateString) {
-    // Parse the input date string
     const dt = new Date(dateString);
     
-    // Format the date into the desired format
-    const hours = dt.getHours();
-    const minutes = dt.getMinutes().toString().padStart(2, '0');
+    // Adjust for Indian Standard Time (IST) which is UTC+5:30
+    const utc = dt.getTime() + (dt.getTimezoneOffset() * 60000);
+    const ISTTime = new Date(utc);
+
+    const hours = ISTTime.getHours();
+    const minutes = ISTTime.getMinutes().toString().padStart(2, '0');
     const ampm = hours >= 12 ? 'PM' : 'AM';
     const hours12 = hours % 12 === 0 ? 12 : hours % 12;
-    const month = (dt.getMonth() + 1).toString().padStart(2, '0');
-    const day = dt.getDate().toString().padStart(2, '0');
-    const year = dt.getFullYear().toString().slice(2); // Get last two digits of the year
-    
-    const formattedDate = `${hours12}:${minutes} ${ampm}, ${month}/${day}/${year}`;
+    const month = (ISTTime.getMonth() + 1).toString().padStart(2, '0');
+    const day = ISTTime.getDate().toString().padStart(2, '0');
+    const year = ISTTime.getFullYear().toString().slice(2);
+
+    const formattedDate = `${hours12}:${minutes} ${ampm}, ${day}/${month}/${year}`;
     return formattedDate;
 }
+
+
 
 const TeamViewList = ()=>{
   return <div className="TeamViewOverlay" onClick={()=>{setIsViewingTeamList(false)}}>
