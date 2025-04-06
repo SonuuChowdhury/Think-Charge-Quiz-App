@@ -6,7 +6,7 @@ import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowsRotate, faTrash, faQrcode,faUser } from '@fortawesome/free-solid-svg-icons';
 import QrScanner from 'qr-scanner'
-import Loader from '../../Components/Loader/Loader'
+import Loader from '../../Components/Loader/Loader.jsx'
 
 export default function AttendanceAdminPage() {
   const navigate = useNavigate();
