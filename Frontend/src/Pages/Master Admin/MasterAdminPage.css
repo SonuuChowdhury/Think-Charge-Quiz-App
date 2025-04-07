@@ -1,0 +1,164 @@
+.MasterAdminCOntrolButtonSection{
+    width: 100%;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0.7rem 0 0.7rem;
+}
+
+.MasterAddTeamButton{
+    padding: 0.5rem 1.2rem 0.5rem 1.2rem ;
+    background-color: blueviolet;
+    border: none;
+    color: white;
+    margin-right: 0.3rem;
+}
+
+.MasterMoreControlsBurgerIconSection{
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.MasterAdminCOntrolButtonSectionInfoButton{
+    height: 1.2rem;
+    cursor: pointer;
+}
+
+.MasterAddTeamButtonPrimary{
+    display: flex;
+    align-items: center;
+}
+
+
+/* Master Team List Section */
+.MasterTeamListSection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Master Team List Section Item */
+.MasterTeamListSectionItem {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    width: 100%;
+    max-width: 600px; /* Adjust based on your layout */
+    transition: transform 0.3s ease;
+}
+
+.MasterTeamListSectionItem:hover {
+    transform: scale(1.01);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Master Team List Section Item Meta Details Section */
+.MasterTeamListSectionItemMataDetailsSection {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.MasterTeamListSectionItemTeamName {
+    font-weight: bold;
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.MasterTeamListSectionItemMataDetailsSection span {
+    margin-bottom: 5px;
+}
+
+/* Master Team List Section Item Login Details And Control Section */
+.MasterTeamListSectionItemLoginDetailsAndControlSection {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.MasterTeamListSectionItemLoginDetailsAndControlSectionDates {
+    display: flex;
+    flex-direction: column;
+}
+
+.MasterTeamListSectionItemLoginDetailsAndControlSectionDates span {
+    margin-bottom: 5px;
+}
+
+.MasterTeamListSectionItemLoginDetailsAndControlSectionDates span:nth-child(2n) {
+    color: #666;
+}
+
+.MasterTeamListSectionItemLoginDetailsAndControlSectionButtonSection {
+    display: flex;
+    gap: 10px;
+}
+
+.viewButton {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.viewButton:hover {
+    background-color: #0056b3;
+}
+
+.deleteButton {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.deleteButton:hover {
+    background-color: #c82333;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .MasterTeamListSectionItem {
+        padding: 15px;
+    }
+    .MasterTeamListSectionItemMataDetailsSection {
+        margin-bottom: 15px;
+    }
+    .MasterTeamListSectionItemLoginDetailsAndControlSection {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .MasterTeamListSectionItemLoginDetailsAndControlSectionButtonSection {
+        margin-top: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .MasterTeamListSectionItem {
+        padding: 10px;
+    }
+    .MasterTeamListSectionItemMataDetailsSection {
+        margin-bottom: 10px;
+    }
+    .viewButton, .deleteButton {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+}
+
+.MasterTeamListSectionAreaHeader{
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-left: 0.6rem;
+}
