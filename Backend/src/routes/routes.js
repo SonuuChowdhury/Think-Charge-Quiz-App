@@ -13,6 +13,7 @@ import AddParticipant from "../api/Master Admin/AddParticipants.js";
 import DeleteParticipant from "../api/Master Admin/DeletePartcipants.js";
 import EditQuizStartingTime from "../api/Master Admin/EditQuizStartingTime.js";
 import GetLockOpenKey from "../api/Master Admin/GetLockOpenKey.js";
+import FetchTeams from "../api/Master Admin/FetchTeams.js";
 
 // Attendnace Admin Task 
 import MarkTeamPresent from "../api/Attendnace Admin/MarkPresent.js";
@@ -39,6 +40,7 @@ router.post('/login/admin',getAdminCredentials)
 router.post('/add-participant', MasterAdminTokenVerification, AddParticipant)
 router.delete('/delete-participants/:id',MasterAdminTokenVerification, DeleteParticipant)
 router.get('/get-key',MasterAdminTokenVerification,GetLockOpenKey)
+router.get('/fetch-teams',MasterAdminTokenVerification,FetchTeams)
 router.post('/edit-start-time',MasterAdminTokenVerification, EditQuizStartingTime)
 
 // Attendance Admin ROutes 
