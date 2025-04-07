@@ -10,8 +10,28 @@ AddParticipant.post('/add-participant', async (req, res) => {
   try {
     const { teamName, mobile, teamMembers } = req.body;
 
+    // Check if required fields are present
     if (!teamName || !mobile || !teamMembers || !Array.isArray(teamMembers)) {
       return res.status(400).json({ msg: "Required data is missing or incorrect" });
+    }
+
+    // Validate teamMembers array length
+    if (teamMembers.length < 3 || teamMembers.length > 4) {
+      return res.status(400).json({ msg: "Team members must be between 3 and 4" });
+    }
+
+    // Validate each team member's structure
+    const isValidTeamMembers = teamMembers.every(member => 
+      member.name && 
+      member.department && 
+      member.sem && 
+      member.gender && 
+      ['Male', 'Female'].includes(member.gender) && 
+      member.role
+    );
+
+    if (!isValidTeamMembers) {
+      return res.status(400).json({ msg: "Each team member must have valid name, department, sem, gender (Male/Female), and role" });
     }
 
     // Check if team name already exists

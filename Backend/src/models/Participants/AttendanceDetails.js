@@ -7,6 +7,7 @@ const AttendanceDetailsLayout = new mongoose.Schema({
   teamName: { type: String, required: true }, 
   mobile: { type: Number, required: true },  
   EnteredOn: { type: Date},
+  setAssigned:{ type: String},
   isAllPresent:{type:Boolean},
   PresentMembers: [{ 
     name: { type: String},

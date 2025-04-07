@@ -2,6 +2,8 @@ import express from 'express';
 import AttendanceDetailsSchema from '../../models/Participants/AttendanceDetails.js';
 import ParticipantsDetails from '../../models/Participants/ParticipantsDetails.js';
 import GetCurrentIST from '../../../Demo/GetCurrentIST.js';
+import QuizManagementDetailsSchema from '../../models/Admins/QuizManageMentDetails.js';
+import GetSetNumber from '../../../Demo/GetSetNumber.js'
 
 const MarkTeamPresent = express.Router();
 MarkTeamPresent.use(express.json());
@@ -61,11 +63,20 @@ MarkTeamPresent.post('/mark-present', async (req, res) => {
       }
     }
 
+    const QuizSettingsDetails = await QuizManagementDetailsSchema.findOne();
+    const SetToBeAssigned = await GetSetNumber(QuizSettingsDetails.LastSetAssigned);
+
+    QuizSettingsDetails.LastSetAssigned = SetToBeAssigned;
+    await QuizSettingsDetails.save();
+
+    
+
     // Create attendance entry
     const attendanceEntry = new AttendanceDetailsSchema({
       teamName: teamNameString,
       mobile: mobileNumber,
       EnteredOn,
+      setAssigned:SetToBeAssigned,
       isAllPresent,
       PresentMembers: finalPresentMembers // Empty array if all present, else filtered list
     });
