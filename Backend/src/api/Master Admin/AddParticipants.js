@@ -8,10 +8,10 @@ AddParticipant.use(express.json());
 
 AddParticipant.post('/add-participant', async (req, res) => {
   try {
-    const { teamName, mobile, teamMembers } = req.body;
+    const { teamName, email, mobile, teamMembers } = req.body;
 
     // Check if required fields are present
-    if (!teamName || !mobile || !teamMembers || !Array.isArray(teamMembers)) {
+    if (!teamName || !mobile || !teamMembers || !email || !Array.isArray(teamMembers)) {
       return res.status(400).json({ msg: "Required data is missing or incorrect" });
     }
 
@@ -53,6 +53,7 @@ AddParticipant.post('/add-participant', async (req, res) => {
     const newParticipant = new ParticipantsDetails({
       teamName,
       mobile,
+      email,
       password: await hashPassword(GenPassword),
       joined: await GetCureentIST(),
       teamMembers,

@@ -6,6 +6,7 @@ const { loginCredentialsConnection } = await connectDB();
 const ParticipantsDetailsSchema = new mongoose.Schema({
   teamName: { type: String, required: true }, 
   mobile: { type: Number, required: true }, 
+  email:{ type: String, required: true }, 
   password: { type: String, required: true },
   LastLogin: { type: Date, default: null}, 
   joined: { type: Date},
