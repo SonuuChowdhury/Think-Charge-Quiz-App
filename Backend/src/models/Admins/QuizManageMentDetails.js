@@ -6,7 +6,7 @@ const { loginCredentialsConnection } = await connectDB();
 const QuizManagementLayout = new mongoose.Schema({
   passCode: {type: String},
   passCodeGeneratedOn:{type: Date},
-  LastSetAssigned: {type: Number},
+  LastSetAssigned: {type: String},
   StartQuizOn: { type: Date}, 
 });
 
