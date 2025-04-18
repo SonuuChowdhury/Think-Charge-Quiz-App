@@ -62,7 +62,6 @@ export default function AttendanceAdminPage() {
         },
         { headers: { "scee-event-admin-token": token } }
         );
-        console.log(response)
       if(response.status==201){
         setselectingMemebrLists(false)
         setIsAllPresent(false)
@@ -100,7 +99,6 @@ export default function AttendanceAdminPage() {
             const response = await axios.get(`https://think-charge-quiz-app.onrender.com/fetch-team/${QRresponse.data}`,{
               headers: { "scee-event-admin-token": token }
             })
-            console.log(response.status)
             if(response.status==200){
               setFetchedDataAfterQR(response.data)
             }else{
@@ -169,7 +167,6 @@ export default function AttendanceAdminPage() {
           { headers: { "scee-event-admin-token": token } }
         );
         setParticipantDetails(response.data.reports);
-        console.log(response.data.reports)
       } catch (error) {
         console.error("Error fetching team details:", error);
       }finally{
