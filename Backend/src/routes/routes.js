@@ -38,7 +38,7 @@ router.post('/login/admin',getAdminCredentials)
 
 // Master admin Routes
 router.post('/add-participant', MasterAdminTokenVerification, AddParticipant)
-router.delete('/delete-participants/:id',MasterAdminTokenVerification, DeleteParticipant)
+router.delete('/delete-participants/:mobile',MasterAdminTokenVerification, DeleteParticipant)
 router.get('/get-key',MasterAdminTokenVerification,GetLockOpenKey)
 router.get('/fetch-teams',MasterAdminTokenVerification,FetchTeams)
 router.post('/edit-start-time',MasterAdminTokenVerification, EditQuizStartingTime)

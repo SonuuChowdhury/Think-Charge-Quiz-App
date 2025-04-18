@@ -3,14 +3,16 @@ import ParticipantsDetails from '../../models/Participants/ParticipantsDetails.j
 
 const DeleteParticipant = express.Router();
 
-DeleteParticipant.delete('/delete-participants/:id', async (req, res) => {
+// Route: Delete participant using mobile number
+DeleteParticipant.delete('/delete-participants/:mobile', async (req, res) => {
   try {
-    const { id } = req.params;
+    const { mobile } = req.params;
+    const MobileNumbers = Number(mobile)
 
-    const deletedParticipant = await ParticipantsDetails.findByIdAndDelete(id);
+    const deletedParticipant = await ParticipantsDetails.findOneAndDelete({ mobile });
 
     if (!deletedParticipant) {
-      return res.status(404).json({ msg: "Participant not found" });
+      return res.status(404).json({ msg: "Participant not found with the provided mobile number" });
     }
 
     return res.status(200).json({ msg: "Participant deleted successfully" });
