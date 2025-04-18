@@ -11,6 +11,10 @@ import {faListUl,faUserGroup,faCircleInfo, faTrash, faEye} from '@fortawesome/fr
 export default function MasterAdminPage() {
   const navigate = useNavigate();
   const [isLoading, setisLoading] = useState(false)
+  const [deletingTeamDetails, setDeletingTeamDetails] = useState({})
+  const [deletingTeam, setDeletingTeam] = useState(false)
+  const [viewingTeamDetails, setViewingTeamDetails] = useState({})
+  const [viewingTeam, setViewingTeam] = useState(false)
 
   const [participantDetails, setParticipantDetails] = useState([]);
 
@@ -79,9 +83,96 @@ export default function MasterAdminPage() {
     return formattedDate;
 }
 
+
+const DeleteTeamHandeller = async()=>{
+  setisLoading(true)
+  try{
+    const token = localStorage.getItem("admin-token");
+    if (!token) {
+      console.error("No admin token found!");
+      return;
+    }
+    const response = await axios.delete(
+      `https://think-charge-quiz-app.onrender.com/delete-participants/${deletingTeamDetails.mobile}`,
+      {
+        headers: {
+          "scee-event-admin-token": token,
+        },
+      }
+    );
+    if(response.status==200){
+      alert(`Deleted team ${deletingTeamDetails.teamName} `)
+    }
+  }catch(err){
+    alert("Failed to delete the team")
+    console.log(err)
+  }finally{
+    setisLoading(false)
+    window.location.reload()
+  }
+}
+
+
+
+const DeleteActionHandeller = ()=>{
+  return ( <div className="DeleteActionHandellerBackground" onClick={()=>{setDeletingTeam(false)}}>
+              <div className="DeleteActionHandellerBox" onClick={(e)=>{
+                e.stopPropagation()
+                }}>
+                <span className="DeleteActionHandellerBoxConfirmText">Confirm Delete Team</span>
+                <span className="DeleteActionHandellerBoxConfirmTeamName">
+                {deletingTeamDetails.teamName}
+                </span>
+                <span className="DeleteActionHandellerBoxConfirmTeamName">
+                {deletingTeamDetails.mobile}
+                </span>
+                <div className="DeleteActionHandellerBoxConfirmButtonSection">
+                  <button onClick={()=>setDeletingTeam(false)} >No</button>
+                  <button onClick={DeleteTeamHandeller}>Yes</button>
+                </div>
+              </div>
+  </div> )
+}
+
+
+const ViewActionHandeller = () => {
+
+  return (
+    <div
+      className="ViewActionHandellerBackground"
+      onClick={() => setViewingTeam(false)}
+    >
+      <div
+        className="ViewActionHandellerBox"
+        onClick={e => e.stopPropagation()}
+      >
+        <h2 className="team-title">{viewingTeamDetails.teamName}</h2>
+        <div className="members-list">
+          {viewingTeamDetails.members.map(member => (
+            <div className="member-card" key={member._id}>
+              <div className="member-header">
+                <span className="member-name">{member.name}</span>
+                <span className={`member-role ${member.role.toLowerCase()}`}>
+                  {member.role}
+                </span>
+              </div>
+              <div className="member-details">
+                <span>{member.department}</span>
+                <span>Sem: {member.sem}</span>
+                <span>{member.gender}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
   return (
     <>
       {isLoading && <Loader />}
+      {viewingTeam && <ViewActionHandeller/>}
+      {deletingTeam && <DeleteActionHandeller/> }
       <nav className="master-admin-nav">
         <div className="nav-brand">
           <h1>Master Dashboard</h1>
@@ -135,11 +226,23 @@ export default function MasterAdminPage() {
                     <span className="MasterTeamListSectionItemLoginDetailsAndControlSectionDates">{formatDate(data.LastLogin) || "No Data"}</span>
                 </span>
                 <div className="MasterTeamListSectionItemLoginDetailsAndControlSectionButtonSection">
-                    <button className="viewButton">
+                    <button className="viewButton" onClick={()=>{
+                      setViewingTeamDetails({
+                        "teamName":data.teamName,
+                        "members":data.teamMembers
+                      })
+                      setViewingTeam(true)
+                    }}>
                         <FontAwesomeIcon icon={faEye} />
                         View
                     </button>
-                    <button className="deleteButton">
+                    <button className="deleteButton" onClick={()=>{
+                      setDeletingTeamDetails({
+                        "teamName":data.teamName,
+                        "mobile":data.mobile
+                      })
+                      setDeletingTeam(true)
+                      }}>
                         <FontAwesomeIcon icon={faTrash} />
                         Delete
                     </button>
@@ -148,10 +251,6 @@ export default function MasterAdminPage() {
         </div>
     ))}
 </div>
-
-
-
-
         </div>
 
     </>
