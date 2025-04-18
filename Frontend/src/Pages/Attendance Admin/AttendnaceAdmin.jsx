@@ -167,6 +167,7 @@ export default function AttendanceAdminPage() {
           { headers: { "scee-event-admin-token": token } }
         );
         setParticipantDetails(response.data.reports);
+        console.log(response.data.reports)
       } catch (error) {
         console.error("Error fetching team details:", error);
       }finally{
@@ -394,6 +395,9 @@ const SelctingMemebrsList = ()=>{
                 </span>
                 <span className="PresentTeamItemLeftPartTime">
                   {formatDate(data.enteredOn)}
+                </span>
+                <span className="PresentTeamItemLeftPartSet">
+                  Set Assigned: {data.SetAssigned}
                 </span>
               </div>
               <div className="PresentTeamItemRightPart">

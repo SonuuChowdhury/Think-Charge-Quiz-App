@@ -316,6 +316,12 @@
     font-size: 0.6rem;
 }
 
+.PresentTeamItemLeftPartSet{
+    font-size: 0.7rem;
+    font-weight: bold;
+
+}
+
 .TeamViewOverlay{
     width: 100vw;
     height: 100vh;
