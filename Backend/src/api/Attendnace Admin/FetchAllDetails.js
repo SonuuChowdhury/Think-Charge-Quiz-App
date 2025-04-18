@@ -29,6 +29,7 @@ FetchAllAttendanceDetails.post('/fetch-attendance', async (req, res) => {
       let absentMembers = [...teamMembers];
       let isPresent = false; // Initialize isPresent as false
       let enteredOn = null; // Default value for EnteredOn
+      let SetAssigned=null;
 
       if (attendanceEntry) {
         isPresent = true; // Mark as present if attendance entry exists
