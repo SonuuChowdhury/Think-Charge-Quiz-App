@@ -6,6 +6,7 @@ import AdminLoginPage from './Pages/Admin Login/AdminLoginPage';
 import GamePage from './Pages/Game Page/GamePage';
 import MasterAdminPage from './Pages/Master Admin/MasterAdminPage';
 import AttendanceAdminPage from './Pages/Attendance Admin/AttendnaceAdmin';
+import AddTeam from './Pages/Master Admin/Pages/Add Teams/AddTeams';
 
 function App() {
 
@@ -19,6 +20,7 @@ function App() {
         <Route path="/playgame" element={<GamePage/>} />
         <Route path="/master-admin" element={<MasterAdminPage/>} />
         <Route path="/attendance-admin" element={<AttendanceAdminPage/>} />
+        <Route path="/master-admin/add-team" element={<AddTeam/>} />
       </Routes>
     </Router>
 

@@ -188,10 +188,10 @@ const ViewActionHandeller = () => {
 
         <div className="MasterAdminCOntrolButtonSection">
             <span className="MasterAddTeamButtonPrimary">
-                <button className="MasterAddTeamButton">
+                <button onClick={()=>navigate("/master-admin/add-team")} className="MasterAddTeamButton">
                     Add Teams <FontAwesomeIcon icon={faUserGroup} />
                 </button>
-                <FontAwesomeIcon title="Upload the team details in the desired format to read and upload and the team details to server" className="MasterAdminCOntrolButtonSectionInfoButton" icon={faCircleInfo} />
+                <FontAwesomeIcon title="Upload the team details in the desired format to read and upload and the team details to server" className="MasterAdminCOntrolButtonSectionInfoButton" onClick={()=>{alert("Upload the excel file with details in desired format... Click the ADD TEAM button to know more.")}} icon={faCircleInfo} />
             </span>
             <span className="MasterMoreControlsBurgerIconSection">
                 <FontAwesomeIcon icon={faListUl} />
@@ -202,7 +202,6 @@ const ViewActionHandeller = () => {
             <span className="MasterTeamListSectionAreaHeader">
                 Teams
             </span>
-
 
 
             <div className="MasterTeamListSection">

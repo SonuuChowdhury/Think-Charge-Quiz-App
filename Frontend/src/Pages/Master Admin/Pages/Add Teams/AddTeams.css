@@ -1,0 +1,332 @@
+/* AddTeams.css */
+
+.addteams-root {
+    min-height: 100vh;
+    background: #f8fafc;
+    font-family: 'Segoe UI', Arial, sans-serif;
+  }
+  
+  .addteams-upload-label {
+    margin-left: 0.5rem;
+    background: #2563eb;
+    margin-top: 1rem;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 24px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: inline-block;
+    text-align: center;
+    /* Optional: Remove underline if label is inside a form */
+    text-decoration: none;
+  }
+  
+  .addteams-upload-label:hover {
+    background: #1e40af;
+  }
+
+  .addteams-file-input-hidden {
+    display: none;
+  }
+  
+
+
+  .addteams-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fff;
+    box-shadow: 0 2px 8px 0 rgba(0,0,0,0.07);
+    border-radius: 16px;
+    padding: 24px 32px;
+    margin-bottom: 32px;
+  }
+  
+  .addteams-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #22223b;
+    margin: 0;
+  }
+  
+  .addteams-subtitle {
+    color: #7c7c7c;
+    font-size: 0.95rem;
+  }
+  
+  .addteams-dashboard-btn {
+    margin-top: 1rem;
+    margin-left: 0.5rem;
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 24px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .addteams-dashboard-btn:hover {
+    background: #1e40af;
+  }
+  
+  .addteams-upload-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 30px;
+  }
+  
+  .addteams-file-input {
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 8px 14px;
+    background: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  
+  .addteams-success {
+    color: #059669;
+    font-weight: 500;
+    margin-left: 0.5rem;
+  }
+  
+  .addteams-error {
+    color: #dc2626;
+    font-weight: 500;
+  }
+  
+  .addteams-empty {
+    text-align: center;
+    color: #7c7c7c;
+    margin-top: 48px;
+    font-size: 1.1rem;
+  }
+  
+  .addteams-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  
+  @media (min-width: 700px) {
+    .addteams-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (min-width: 1100px) {
+    .addteams-grid {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+  }
+  
+  .addteams-team-card {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 2px 10px 0 rgba(0,0,0,0.08), 0 1.5px 4px 0 rgba(0,0,0,0.06);
+    padding: 24px 20px 18px 20px;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .addteams-team-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 6px 18px 0 rgba(0,0,0,0.13);
+  }
+  
+  .addteams-team-name {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #22223b;
+    margin-bottom: 7px;
+  }
+  
+  .addteams-team-info {
+    color: #555;
+    display: flex;
+    flex-direction: column;
+    font-size: 0.98rem;
+    margin-bottom: 8px;
+  }
+  .addteams-bold {
+    font-weight: 600;
+    color: #22223b;
+  }
+  
+  .addteams-accordion-toggle {
+    background: none;
+    border: none;
+    color: #2563eb;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    margin: 5px 0 10px 0;
+    text-align: left;
+    outline: none;
+    transition: color 0.2s;
+  }
+  .addteams-accordion-toggle:hover {
+    color: #1e40af;
+  }
+  
+  .addteams-members-section {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.35s cubic-bezier(.4,0,.2,1), opacity 0.25s;
+  }
+  .addteams-members-section.expanded {
+    max-height: 700px;
+    opacity: 1;
+    margin-bottom: 0;
+  }
+  
+  .addteams-members-grid {
+    display: grid;
+    padding-right: 0.3rem;
+    padding-left: 0.3rem;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-top: 7px;
+  }
+  
+  @media (min-width: 600px) {
+    .addteams-members-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  
+  .addteams-member-card {
+    background: #f1f5f9;
+    border-radius: 10px;
+    padding: 12px 14px 10px 14px;
+    box-shadow: 0 1.5px 4px 0 rgba(0,0,0,0.04);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  
+  .addteams-member-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2px;
+  }
+  
+  .addteams-member-name {
+    font-weight: 600;
+    color: #1e293b;
+    font-size: 1rem;
+  }
+  
+  .addteams-badge {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 12px;
+    font-size: 0.87em;
+    font-weight: 600;
+    margin-left: 6px;
+    margin-top: 0;
+    margin-bottom: 0;
+    vertical-align: middle;
+    letter-spacing: 0.01em;
+  }
+  
+  .badge-leader {
+    background: #2563eb;
+    color: #fff;
+  }
+  .badge-developer {
+    background: #22c55e;
+    color: #fff;
+  }
+  .badge-designer {
+    background: #a78bfa;
+    color: #fff;
+  }
+  .badge-default {
+    background: #e5e7eb;
+    color: #374151;
+  }
+  
+  .addteams-member-detail {
+    color: #64748b;
+    font-size: 0.95em;
+  }
+  
+
+
+  /* Status Indicator Styles */
+.addteams-status-ring {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 3px solid #d1d5db;
+  position: relative;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.addteams-status-ring.pending {
+  border-color: #f87171;
+  background-color: #fee2e2;
+}
+
+.addteams-status-ring.added {
+  border-color: #22c55e;
+  background-color: #dcfce7;
+}
+
+.addteams-status-ring.updating {
+  border-color: #3b82f6;
+  background-color: #dbeafe;
+  animation: spin 1.5s linear infinite;
+  border-top-color: #2563eb;
+}
+
+.addteams-status-text {
+  font-weight: 600;
+  color: #374151;
+  user-select: none;
+  white-space: nowrap;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 600px) {
+  .addteams-status-ring {
+    width: 18px;
+    height: 18px;
+    border-width: 2px;
+  }
+  .addteams-status-text {
+    font-size: 0.8rem;
+  }
+  .addteams-team-info {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (min-width: 601px) and (max-width: 900px) {
+  .addteams-status-ring {
+    width: 22px;
+    height: 22px;
+  }
+  .addteams-status-text {
+    font-size: 0.9rem;
+  }
+}
+
+/* Existing media queries remain unchanged */
