@@ -7,6 +7,7 @@ import GamePage from './Pages/Game Page/GamePage';
 import MasterAdminPage from './Pages/Master Admin/MasterAdminPage';
 import AttendanceAdminPage from './Pages/Attendance Admin/AttendnaceAdmin';
 import AddTeam from './Pages/Master Admin/Pages/Add Teams/AddTeams';
+import FileFormatInfo from './Pages/Master Admin/Pages/Add Teams/File Format Info/FileFormatInfo';
 
 function App() {
 
@@ -21,6 +22,7 @@ function App() {
         <Route path="/master-admin" element={<MasterAdminPage/>} />
         <Route path="/attendance-admin" element={<AttendanceAdminPage/>} />
         <Route path="/master-admin/add-team" element={<AddTeam/>} />
+        <Route path="/master-admin/add-team/file-format-info" element={<FileFormatInfo/>} />
       </Routes>
     </Router>
 
