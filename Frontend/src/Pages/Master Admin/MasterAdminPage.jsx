@@ -101,14 +101,13 @@ const DeleteTeamHandeller = async()=>{
       }
     );
     if(response.status==200){
-      alert(`Deleted team ${deletingTeamDetails.teamName} `)
+      window.location.reload()
     }
   }catch(err){
     alert("Failed to delete the team")
     console.log(err)
   }finally{
     setisLoading(false)
-    window.location.reload()
   }
 }
 
