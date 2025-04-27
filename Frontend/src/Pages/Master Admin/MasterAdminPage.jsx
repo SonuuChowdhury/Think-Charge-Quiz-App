@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Loader from "../../Components/Loader/Loader.jsx";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {faListUl,faUserGroup,faCircleInfo, faTrash, faEye} from '@fortawesome/free-solid-svg-icons';
+import {faListUl,faUserGroup,faCircleInfo,faKey,faClock,faTrash, faEye,faBan, faPen,faMedal } from '@fortawesome/free-solid-svg-icons';
 
 export default function MasterAdminPage() {
   const navigate = useNavigate();
@@ -16,6 +16,7 @@ export default function MasterAdminPage() {
   const [viewingTeamDetails, setViewingTeamDetails] = useState({})
   const [viewingTeam, setViewingTeam] = useState(false)
   const [Refresh, setRefresh] = useState(true)
+  const [isSideControlBarOpen, setisSideControlBarOpen] = useState(false)
 
   const [participantDetails, setParticipantDetails] = useState([]);
 
@@ -135,6 +136,46 @@ const DeleteActionHandeller = ()=>{
   </div> )
 }
 
+const SideControlBar = ()=>{
+  return ( <div className="SideControlBarMainAreaBackgorund" onClick={() => setisSideControlBarOpen(false)}>
+  <div
+    className={`SideControlBarMainArea ${isSideControlBarOpen ? 'open' : ''}`}
+    onClick={(e) => e.stopPropagation()}
+  >
+    <span className="SideControlBarMainHeader">
+      Master Admin Controls
+    </span>
+    <button className="SideControlBarMainControlOptions">
+      <FontAwesomeIcon icon={faClock} />
+      Schedule Quiz
+    </button>
+    <button className="SideControlBarMainControlOptions">
+      <FontAwesomeIcon icon={faPen} />
+      Edit Quiz Questions
+    </button>
+    <button className="SideControlBarMainControlOptions">
+      <FontAwesomeIcon icon={faBan} />
+      Ban or Report Team
+    </button>
+    <button className="SideControlBarMainControlOptions">
+      <FontAwesomeIcon icon={faMedal} />
+      View Results
+    </button>
+    <button className="SideControlBarMainControlOptions">
+      <FontAwesomeIcon icon={faKey} />
+      Get Open Key
+    </button>
+    <button className="SideControlBarMainControlOptionsDelete">
+      <FontAwesomeIcon icon={faTrash} />
+      Delete all Teams
+    </button>
+    <div className="SideControlBarMainControlOptionsLastCapiton">
+      Think Charge. 2025
+    </div>
+  </div>
+</div>)
+}
+
 
 const ViewActionHandeller = () => {
 
@@ -172,6 +213,7 @@ const ViewActionHandeller = () => {
   return (
     <>
       {isLoading && <Loader />}
+      {isSideControlBarOpen && <SideControlBar/>}
       {viewingTeam && <ViewActionHandeller/>}
       {deletingTeam && <DeleteActionHandeller/> }
       <nav className="master-admin-nav">
@@ -194,7 +236,7 @@ const ViewActionHandeller = () => {
                 </button>
                 <FontAwesomeIcon title="Upload the team details in the desired format to read and upload and the team details to server" className="MasterAdminCOntrolButtonSectionInfoButton" onClick={()=>{alert("Upload the excel file with details in desired format... Click the ADD TEAM button to know more.")}} icon={faCircleInfo} />
             </span>
-            <span className="MasterMoreControlsBurgerIconSection">
+            <span className="MasterMoreControlsBurgerIconSection" onClick={()=>setisSideControlBarOpen(true)} >
                 <FontAwesomeIcon icon={faListUl} />
             </span>
         </div>
