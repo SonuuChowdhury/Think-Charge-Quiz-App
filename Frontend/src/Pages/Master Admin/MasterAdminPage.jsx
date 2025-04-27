@@ -15,6 +15,7 @@ export default function MasterAdminPage() {
   const [deletingTeam, setDeletingTeam] = useState(false)
   const [viewingTeamDetails, setViewingTeamDetails] = useState({})
   const [viewingTeam, setViewingTeam] = useState(false)
+  const [Refresh, setRefresh] = useState(true)
 
   const [participantDetails, setParticipantDetails] = useState([]);
 
@@ -61,7 +62,7 @@ export default function MasterAdminPage() {
     };
 
     FetchTeamDetails();
-  }, []);
+  }, [Refresh]);
 
 
   function formatDate(dateString) {
@@ -101,7 +102,8 @@ const DeleteTeamHandeller = async()=>{
       }
     );
     if(response.status==200){
-      window.location.reload()
+      setRefresh((val)=>!val)
+      setDeletingTeam(false)
     }
   }catch(err){
     alert("Failed to delete the team")
