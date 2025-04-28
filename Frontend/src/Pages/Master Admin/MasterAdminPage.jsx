@@ -13,6 +13,7 @@ export default function MasterAdminPage() {
   const [isLoading, setisLoading] = useState(false)
   const [deletingTeamDetails, setDeletingTeamDetails] = useState({})
   const [deletingTeam, setDeletingTeam] = useState(false)
+  const [deletingAllTeams, setDeletingAllTeams] = useState(false)
   const [viewingTeamDetails, setViewingTeamDetails] = useState({})
   const [viewingTeam, setViewingTeam] = useState(false)
   const [Refresh, setRefresh] = useState(true)
@@ -114,6 +115,35 @@ const DeleteTeamHandeller = async()=>{
   }
 }
 
+const DeleteAllTeamHandeller = async()=>{
+  setisLoading(true)
+  try{
+    const token = localStorage.getItem("admin-token");
+    if (!token) {
+      console.error("No admin token found!");
+      return;
+    }
+    const response = await axios.delete(
+      `https://think-charge-quiz-app.onrender.com/delete-all-teams`,
+      {
+        headers: {
+          "scee-event-admin-token": token,
+        },
+      }
+    );
+    if(response.status==200){
+      setRefresh((val)=>!val)
+      setDeletingAllTeams(false)
+    }
+  }catch(err){
+    alert("Failed to delete the team")
+    console.log(err)
+  }finally{
+    setDeletingAllTeams(false)
+    setisLoading(false)
+  }
+}
+
 
 
 const DeleteActionHandeller = ()=>{
@@ -131,6 +161,23 @@ const DeleteActionHandeller = ()=>{
                 <div className="DeleteActionHandellerBoxConfirmButtonSection">
                   <button onClick={()=>setDeletingTeam(false)} >No</button>
                   <button onClick={DeleteTeamHandeller}>Yes</button>
+                </div>
+              </div>
+  </div> )
+}
+
+const DeleteAllActionHandeller = ()=>{
+  return ( <div className="DeleteActionHandellerBackground" onClick={()=>{setDeletingAllTeams(false)}}>
+              <div className="DeleteActionHandellerBox" onClick={(e)=>{
+                e.stopPropagation()
+                }}>
+                <span className="DeleteActionHandellerBoxConfirmText">Confirm Delete</span>
+                <span className="DeleteActionHandellerBoxConfirmTeamName">
+                This can not be reversed
+                </span>
+                <div className="DeleteActionHandellerBoxConfirmButtonSection">
+                  <button onClick={()=>setDeletingAllTeams(false)} >No</button>
+                  <button onClick={DeleteAllTeamHandeller}>Yes</button>
                 </div>
               </div>
   </div> )
@@ -165,7 +212,10 @@ const SideControlBar = ()=>{
       <FontAwesomeIcon icon={faKey} />
       Get Open Key
     </button>
-    <button className="SideControlBarMainControlOptionsDelete">
+    <button className="SideControlBarMainControlOptionsDelete" onClick={()=>{
+      setDeletingAllTeams(true)
+      setisSideControlBarOpen(false)
+      }}>
       <FontAwesomeIcon icon={faTrash} />
       Delete all Teams
     </button>
@@ -213,6 +263,7 @@ const ViewActionHandeller = () => {
   return (
     <>
       {isLoading && <Loader />}
+      {deletingAllTeams && <DeleteAllActionHandeller/> }
       {isSideControlBarOpen && <SideControlBar/>}
       {viewingTeam && <ViewActionHandeller/>}
       {deletingTeam && <DeleteActionHandeller/> }
