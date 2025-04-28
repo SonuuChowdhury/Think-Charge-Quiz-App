@@ -29,7 +29,8 @@ export default function MasterAdminPage() {
   const [viewingTeam, setViewingTeam] = useState(false);
   const [Refresh, setRefresh] = useState(true);
   const [isSideControlBarOpen, setisSideControlBarOpen] = useState(false);
-
+  const [isViewingLockOpenKey, setIsViewingLockOpenKey] = useState(false);
+  const [lockOpenKey, setLockOpenKey] = useState("");
   const [participantDetails, setParticipantDetails] = useState([]);
 
   useEffect(() => {
@@ -95,6 +96,35 @@ export default function MasterAdminPage() {
     const formattedDate = `${hours12}:${minutes} ${ampm}, ${day}/${month}/${year}`;
     return formattedDate;
   }
+
+  const GetLockOpenKey = async () => {
+    try {
+      setisLoading(true);
+      const token = localStorage.getItem("admin-token");
+      if (!token) {
+        console.error("No admin token found!");
+        return;
+      }
+      const response = await axios.get(
+        "https://think-charge-quiz-app.onrender.com/get-key",
+        {
+          headers: {
+            "scee-event-admin-token": token,
+          },
+        }
+      );
+      console.log(response);
+      if (response.status == 200) {
+        setLockOpenKey(response.data.passCode);
+      } else {
+        alert("Failed to fetch teams");
+      }
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setisLoading(false);
+    }
+  };
 
   const DeleteTeamHandeller = async () => {
     setisLoading(true);
@@ -214,6 +244,31 @@ export default function MasterAdminPage() {
     );
   };
 
+  const LockOpenKeyComponent = () => {
+    return (
+      <div
+        className="DeleteActionHandellerBackground"
+        onClick={() => {
+          setIsViewingLockOpenKey(false);
+        }}
+      >
+        <div
+          className="DeleteActionHandellerBox"
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          <span className="DeleteActionHandellerBoxConfirmText">
+            LOCK OPEN KEY
+          </span>
+          <span className="DeleteActionHandellerBoxConfirmTeamName">
+            {lockOpenKey}
+          </span>
+        </div>
+      </div>
+    );
+  };
+
   const SideControlBar = () => {
     return (
       <div
@@ -245,7 +300,14 @@ export default function MasterAdminPage() {
             <FontAwesomeIcon icon={faMedal} />
             View Results
           </button>
-          <button className="SideControlBarMainControlOptions">
+          <button
+            className="SideControlBarMainControlOptions"
+            onClick={() => {
+              setIsViewingLockOpenKey(true);
+              setisSideControlBarOpen(false);
+              GetLockOpenKey();
+            }}
+          >
             <FontAwesomeIcon icon={faKey} />
             Get Open Key
           </button>
@@ -306,6 +368,7 @@ export default function MasterAdminPage() {
       {isSideControlBarOpen && <SideControlBar />}
       {viewingTeam && <ViewActionHandeller />}
       {deletingTeam && <DeleteActionHandeller />}
+      {isViewingLockOpenKey && <LockOpenKeyComponent />}
       <nav className="master-admin-nav">
         <div className="nav-brand">
           <h1>Master Dashboard</h1>
@@ -350,9 +413,9 @@ export default function MasterAdminPage() {
         <span className="MasterTeamListSectionAreaHeader">Teams</span>
 
         <div className="MasterTeamListSection">
-          {participantDetails.length==0 && <span className="NoTeamsFoundText">
-              No Teams Found
-            </span> }
+          {participantDetails.length == 0 && (
+            <span className="NoTeamsFoundText">No Teams Found</span>
+          )}
           {participantDetails.map((data, index) => (
             <div className="MasterTeamListSectionItem" key={index}>
               <div className="MasterTeamListSectionItemMataDetailsSection">

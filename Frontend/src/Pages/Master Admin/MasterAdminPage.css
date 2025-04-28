@@ -466,3 +466,7 @@
   border-top: 2px solid black;
   font-size: 0.8rem;
 }
+
+.DeleteActionHandellerBoxConfirmTeamName{
+  margin-bottom: 0.6rem;
+}
