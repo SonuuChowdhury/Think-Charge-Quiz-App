@@ -9,6 +9,7 @@
   --section-bg: #f9fafb;
   --card-bg: #ffffff;
   --transition: all 0.3s ease;
+  --navbar-height: 70px;
 }
 
 * {
@@ -104,7 +105,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8rem 5% 5rem;
+  padding: calc(var(--navbar-height) + 2.5rem) 5% 5rem;
   background: linear-gradient(135deg, var(--section-bg) 0%, #ffffff 100%);
   min-height: 90vh;
 }
