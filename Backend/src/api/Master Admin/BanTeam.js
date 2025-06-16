@@ -13,7 +13,7 @@ router.post('/ban-team/:mobile', async (req, res) => {
     }
 
     const team = await AttendanceDetailsSchema.findOne({ mobile: Number(mobile) });
-    console.log(`Team found: ${team.teamName} ${team.mobile} ${team.isBanned}`);
+    console.log(`Team found: ${team}`);
     
 
     if (!team) {
