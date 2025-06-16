@@ -470,3 +470,374 @@
 .DeleteActionHandellerBoxConfirmTeamName{
   margin-bottom: 0.6rem;
 }
+
+/* Time Picker Styles */
+.time-picker-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 1rem 0;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.time-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.time-scroll {
+  height: 150px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f1f1f1;
+  background: white;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 0.5rem;
+}
+
+.time-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.time-scroll::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.time-scroll::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+.time-option {
+  padding: 0.5rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.time-option:hover {
+  background: #e9ecef;
+}
+
+.time-option.selected {
+  background: #007bff;
+  color: white;
+}
+
+.time-label {
+  font-size: 0.8rem;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.time-separator {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #495057;
+  margin-top: -1rem;
+}
+
+.quiz-schedule-box {
+  max-width: 400px;
+  width: 95%;
+}
+
+.quiz-schedule-title {
+  text-align: center;
+  margin-bottom: 1rem;
+  color: #212529;
+  font-size: 1.25rem;
+}
+
+.quiz-schedule-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #dee2e6;
+}
+
+.error-message {
+  color: #dc3545;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  padding: 0.75rem;
+  margin: 1rem 0;
+  text-align: center;
+}
+
+.set-now-button {
+  background: #28a745;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.set-now-button:hover {
+  background: #218838;
+}
+
+.set-now-button:disabled,
+.cancel-button:disabled,
+.update-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.cancel-button {
+  background: #6c757d;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.cancel-button:hover {
+  background: #5a6268;
+}
+
+.update-button {
+  background: #007bff;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.update-button:hover {
+  background: #0056b3;
+}
+
+
+
+
+/* Responsive Styles */
+@media (max-width: 480px) {
+  .time-picker-container {
+    padding: 0.5rem;
+    gap: 0.25rem;
+  }
+
+  .time-scroll {
+    height: 120px;
+    padding: 0.25rem;
+  }
+
+  .time-option {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+  }
+
+  .time-separator {
+    font-size: 1.25rem;
+  }
+
+  .time-label {
+    font-size: 0.7rem;
+  }
+
+  .quiz-schedule-title {
+    font-size: 1.1rem;
+  }
+
+  .cancel-button,
+  .update-button,
+  .set-now-button {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* Quiz Time Display Styles */
+.quiz-time-display {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 1rem 0;
+  text-align: center;
+}
+
+.quiz-time-title {
+  color: #212529;
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.quiz-time-value {
+  font-size: 1.5rem;
+  color: #007bff;
+  font-weight: 500;
+  padding: 0.5rem;
+  background: #f8f9fa;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.quiz-time-loading {
+  color: #6c757d;
+  font-size: 1rem;
+  padding: 0.5rem;
+}
+
+.quiz-time-error {
+  color: #dc3545;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  padding: 0.75rem;
+  margin: 0.5rem 0;
+}
+
+.quiz-time-not-set {
+  color: #6c757d;
+  font-style: italic;
+  padding: 0.5rem;
+}
+
+/* Responsive styles for quiz time display */
+@media (max-width: 480px) {
+  .quiz-time-display {
+    padding: 1rem;
+  }
+
+  .quiz-time-title {
+    font-size: 1.1rem;
+  }
+
+  .quiz-time-value {
+    font-size: 1.2rem;
+  }
+}
+
+/* Quiz Time Popup Styles */
+.quiz-time-box {
+  max-width: 400px;
+  width: 95%;
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.12);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.quiz-time-title {
+  color: #212529;
+  font-size: 1.25rem;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #dee2e6;
+  width: 100%;
+}
+
+.quiz-time-value {
+  font-size: 1.5rem;
+  color: #007bff;
+  font-weight: 500;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 4px;
+  margin: 1rem 0;
+  text-align: center;
+  width: 100%;
+}
+
+.quiz-time-loading {
+  color: #6c757d;
+  font-size: 1rem;
+  padding: 1rem;
+  text-align: center;
+  width: 100%;
+}
+
+.quiz-time-error {
+  color: #dc3545;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  padding: 0.75rem;
+  margin: 1rem 0;
+  text-align: center;
+  width: 100%;
+}
+
+.quiz-time-not-set {
+  color: #6c757d;
+  font-style: italic;
+  padding: 1rem;
+  text-align: center;
+  width: 100%;
+}
+
+.quiz-time-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #dee2e6;
+  width: 100%;
+}
+
+.close-button {
+  background: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 2rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.close-button:hover {
+  background: #5a6268;
+}
+
+/* Responsive styles for quiz time popup */
+@media (max-width: 480px) {
+  .quiz-time-box {
+    padding: 1rem;
+  }
+
+  .quiz-time-title {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+
+  .quiz-time-value {
+    font-size: 1.2rem;
+    padding: 0.75rem;
+  }
+
+  .close-button {
+    padding: 0.4rem 1.5rem;
+    font-size: 0.9rem;
+  }
+}

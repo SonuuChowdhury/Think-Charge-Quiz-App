@@ -32,6 +32,10 @@ export default function MasterAdminPage() {
   const [isViewingLockOpenKey, setIsViewingLockOpenKey] = useState(false);
   const [lockOpenKey, setLockOpenKey] = useState("");
   const [participantDetails, setParticipantDetails] = useState([]);
+  const [isEditingQuizStartingTime, setIsEditingQuizStartingTime] = useState(false);
+  const [quizStartingTime, setQuizStartingTime] = useState("");
+  const [isViewingQuizStartingTime, setIsViewingQuizStartingTime] = useState(false);
+  const [quizSchedule, setQuizSchedule] = useState(false);
 
   useEffect(() => {
     const checkRole = () => {
@@ -284,7 +288,15 @@ export default function MasterAdminPage() {
           <span className="SideControlBarMainHeader">
             Master Admin Controls
           </span>
-          <button className="SideControlBarMainControlOptions">
+          <button className="SideControlBarMainControlOptions" onClick={() => {setIsViewingQuizStartingTime(true)
+              setisSideControlBarOpen(false)
+            }} >
+            <FontAwesomeIcon icon={faClock} />
+            View Quiz Time
+          </button>
+          <button className="SideControlBarMainControlOptions" onClick={() => {setIsEditingQuizStartingTime(true)
+              setisSideControlBarOpen(false)
+            }} >
             <FontAwesomeIcon icon={faClock} />
             Schedule Quiz
           </button>
@@ -328,6 +340,7 @@ export default function MasterAdminPage() {
       </div>
     );
   };
+  
 
   const ViewActionHandeller = () => {
     return (
@@ -361,9 +374,294 @@ export default function MasterAdminPage() {
       </div>
     );
   };
+
+
+  const QuizScheduleHandeller = () => {
+    const [selectedHour, setSelectedHour] = useState('00');
+    const [selectedMinute, setSelectedMinute] = useState('00');
+    const [selectedPeriod, setSelectedPeriod] = useState('AM');
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    const hours = Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, '0'));
+    const minutes = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0'));
+    const periods = ['AM', 'PM'];
+
+    const handleTimeChange = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        const hour = parseInt(selectedHour);
+        const adjustedHour = selectedPeriod === 'PM' && hour !== 12 ? hour + 12 : 
+                            selectedPeriod === 'AM' && hour === 12 ? 0 : hour;
+        const formattedHour = String(adjustedHour).padStart(2, '0');
+        
+        // Create a date object for the selected time
+        const selectedDate = new Date();
+        selectedDate.setHours(adjustedHour);
+        selectedDate.setMinutes(parseInt(selectedMinute));
+        selectedDate.setSeconds(0);
+        selectedDate.setMilliseconds(0);
+
+        const token = localStorage.getItem("admin-token");
+        if (!token) {
+          throw new Error("No admin token found!");
+        }
+
+        const response = await axios.post(
+          "https://think-charge-quiz-app.onrender.com/edit-start-time",
+          {
+            time: selectedDate.toISOString(),
+            setNow: false
+          },
+          {
+            headers: {
+              "scee-event-admin-token": token,
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          setQuizStartingTime(`${formattedHour}:${selectedMinute}`);
+          setIsEditingQuizStartingTime(false);
+        } else {
+          throw new Error(response.data.msg || 'Failed to update quiz time');
+        }
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    const handleSetNow = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        const token = localStorage.getItem("admin-token");
+        if (!token) {
+          throw new Error("No admin token found!");
+        }
+
+        const response = await axios.post(
+          "https://think-charge-quiz-app.onrender.com/edit-start-time",
+          {
+            setNow: true
+          },
+          {
+            headers: {
+              "scee-event-admin-token": token,
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          // Update the local state with the new time
+          const newTime = new Date(response.data.StartQuizOn);
+          const hours = String(newTime.getHours()).padStart(2, '0');
+          const minutes = String(newTime.getMinutes()).padStart(2, '0');
+          setQuizStartingTime(`${hours}:${minutes}`);
+          setIsEditingQuizStartingTime(false);
+        } else {
+          throw new Error(response.data.msg || 'Failed to update quiz time');
+        }
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    return (
+      <div
+        className="ViewActionHandellerBackground"
+        onClick={() => setIsEditingQuizStartingTime(false)}
+      >
+        <div
+          className="ViewActionHandellerBox quiz-schedule-box"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <h2 className="quiz-schedule-title">Set Quiz Starting Time</h2>
+          
+          {error && (
+            <div className="error-message">
+              {error}
+            </div>
+          )}
+
+          <div className="time-picker-container">
+            <div className="time-column">
+              <div className="time-scroll hours">
+                {hours.map((hour) => (
+                  <div
+                    key={hour}
+                    className={`time-option ${selectedHour === hour ? 'selected' : ''}`}
+                    onClick={() => setSelectedHour(hour)}
+                  >
+                    {hour}
+                  </div>
+                ))}
+              </div>
+              <span className="time-label">Hours</span>
+            </div>
+
+            <div className="time-separator">:</div>
+
+            <div className="time-column">
+              <div className="time-scroll minutes">
+                {minutes.map((minute) => (
+                  <div
+                    key={minute}
+                    className={`time-option ${selectedMinute === minute ? 'selected' : ''}`}
+                    onClick={() => setSelectedMinute(minute)}
+                  >
+                    {minute}
+                  </div>
+                ))}
+              </div>
+              <span className="time-label">Minutes</span>
+            </div>
+
+            <div className="time-column">
+              <div className="time-scroll period">
+                {periods.map((period) => (
+                  <div
+                    key={period}
+                    className={`time-option ${selectedPeriod === period ? 'selected' : ''}`}
+                    onClick={() => setSelectedPeriod(period)}
+                  >
+                    {period}
+                  </div>
+                ))}
+              </div>
+              <span className="time-label">Period</span>
+            </div>
+          </div>
+
+          <div className="quiz-schedule-actions">
+            <button 
+              className="set-now-button"
+              onClick={handleSetNow}
+              disabled={isLoading}
+            >
+              Set Now
+            </button>
+            <button 
+              className="cancel-button"
+              onClick={() => setIsEditingQuizStartingTime(false)}
+              disabled={isLoading}
+            >
+              Cancel
+            </button>
+            <button 
+              className="update-button"
+              onClick={handleTimeChange}
+              disabled={isLoading}
+            >
+              {isLoading ? 'Updating...' : 'Update'}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+
+  const ViewQuizStartingTimeHandeller = () => {
+    const [quizTime, setQuizTime] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+      const fetchQuizTime = async () => {
+        try {
+          setIsLoading(true);
+          setError(null);
+          
+          const token = localStorage.getItem("admin-token");
+          if (!token) {
+            throw new Error("No admin token found!");
+          }
+
+          const response = await axios.get(
+            "https://think-charge-quiz-app.onrender.com/get-start-time",
+            {
+              headers: {
+                "scee-event-admin-token": token,
+              },
+            }
+          );
+
+          if (response.status === 200) {
+            setQuizTime(new Date(response.data.StartQuizOn));
+          } else {
+            throw new Error(response.data.msg || 'Failed to fetch quiz time');
+          }
+        } catch (err) {
+          setError(err.message);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      fetchQuizTime();
+    }, []);
+
+    const formatTime = (date) => {
+      if (!date) return '';
+      
+      const hours = date.getHours();
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      const hours12 = hours % 12 === 0 ? 12 : hours % 12;
+      
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+
+      return `${hours12}:${minutes} ${ampm}, ${day}/${month}/${year}`;
+    };
+
+    return (
+      <div 
+        className="ViewActionHandellerBackground"
+        onClick={() => setIsViewingQuizStartingTime(false)}
+      >
+        <div 
+          className="ViewActionHandellerBox quiz-time-box"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <h2 className="quiz-time-title">Quiz Starting Time</h2>
+          
+          {isLoading ? (
+            <div className="quiz-time-loading">Loading...</div>
+          ) : error ? (
+            <div className="quiz-time-error">{error}</div>
+          ) : quizTime ? (
+            <div className="quiz-time-value">{formatTime(quizTime)}</div>
+          ) : (
+            <div className="quiz-time-not-set">No quiz time set</div>
+          )}
+
+          <div className="quiz-time-actions">
+            <button 
+              className="close-button"
+              onClick={() => setIsViewingQuizStartingTime(false)}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <>
       {isLoading && <Loader />}
+      {isViewingQuizStartingTime && <ViewQuizStartingTimeHandeller />}
+      {isEditingQuizStartingTime && <QuizScheduleHandeller />}
       {deletingAllTeams && <DeleteAllActionHandeller />}
       {isSideControlBarOpen && <SideControlBar />}
       {viewingTeam && <ViewActionHandeller />}
