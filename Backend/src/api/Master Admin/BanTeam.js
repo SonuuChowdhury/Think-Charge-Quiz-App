@@ -6,12 +6,14 @@ const router = express.Router();
 router.post('/ban-team/:mobile', async (req, res) => {
   try {
     const { mobile } = req.params;
+    console.log(`Ban Request of Mobile number: ${mobile}`);
 
     if (!mobile) {
       return res.status(400).json({ message: 'Mobile number is required' });
     }
 
     const team = await AttendanceDetailsSchema.findOne({ mobile: Number(mobile) });
+    
 
     if (!team) {
       return res.status(404).json({ message: 'Team not found' });
