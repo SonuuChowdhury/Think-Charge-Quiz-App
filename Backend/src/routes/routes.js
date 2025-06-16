@@ -47,6 +47,8 @@ router.get('/get-key',MasterAdminTokenVerification,GetLockOpenKey)
 router.get('/fetch-teams',MasterAdminTokenVerification,FetchTeams)
 router.post('/edit-start-time',MasterAdminTokenVerification, EditQuizStartingTime)
 router.get('/get-start-time',MasterAdminTokenVerification, GetQuizStartingTime)
+router.post('/ban-team/:mobile', MasterAdminTokenVerification, BanTeam)
+
 
 // Attendance Admin Routes 
 router.post('/mark-present',AttendaceAdminTokenVerification,MarkTeamPresent)
