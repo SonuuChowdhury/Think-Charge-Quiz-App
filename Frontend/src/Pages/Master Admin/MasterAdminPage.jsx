@@ -692,7 +692,6 @@ export default function MasterAdminPage() {
 
       if (response.status === 200) {
         alert(`Team with mobile number ${mobileNumber} has been banned successfully`);
-        setRefresh((val) => !val); // Refresh the team list
         stopScanner();
         setIsScanningQR(false);
       } else {
@@ -703,6 +702,7 @@ export default function MasterAdminPage() {
       alert(err.message);
     } finally {
       setisLoading(false);
+      setRefresh((val) => !val); // Refresh the team list
     }
   };
 
@@ -786,6 +786,7 @@ export default function MasterAdminPage() {
           if (e.target === e.currentTarget) {
             stopScanner();
             setIsScanningQR(false)
+            setRefresh((val) => !val); // Refresh the team list
           }
         }}
       >
@@ -832,6 +833,13 @@ export default function MasterAdminPage() {
       </div>
     );
   };
+
+  const BanTag = () => (
+    <div className="ban-tag">
+      <FontAwesomeIcon icon={faBan} />
+      <span>BANNED</span>
+    </div>
+  );
 
   return (
     <>
@@ -892,11 +900,14 @@ export default function MasterAdminPage() {
             <span className="NoTeamsFoundText">No Teams Found</span>
           )}
           {participantDetails.map((data, index) => (
-            <div className="MasterTeamListSectionItem" key={index}>
+            <div className={`MasterTeamListSectionItem ${data.isBanned ? 'banned' : ''}`} key={index}>
               <div className="MasterTeamListSectionItemMataDetailsSection">
-                <span className="MasterTeamListSectionItemTeamName">
-                  {data.teamName}
-                </span>
+                <div className="team-name-container">
+                  <span className="MasterTeamListSectionItemTeamName">
+                    {data.teamName}
+                  </span>
+                  {data.isBanned && <BanTag />}
+                </div>
                 <span>{data.mobile}</span>
                 <span>{data.email ? data.email : "No Email"}</span>
               </div>
