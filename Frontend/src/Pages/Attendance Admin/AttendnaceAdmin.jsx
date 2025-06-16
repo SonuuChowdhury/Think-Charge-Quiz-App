@@ -62,7 +62,6 @@ export default function AttendanceAdminPage() {
               );
               if (response.status === 200) {
                 setFetchedDataAfterQR(response.data);
-                // Stop scanning after successful scan
                 scanner.stop();
                 setIsScanning(false);
                 setselectingMemebrLists(true);
@@ -110,7 +109,6 @@ export default function AttendanceAdminPage() {
       startScanner();
     } else {
       stopScanner();
-      setScannedData(null);
       setFetchedDataAfterQR({});
     }
   }, [isScanning]);
@@ -132,17 +130,25 @@ export default function AttendanceAdminPage() {
       setIsLoading(true)
       const token = localStorage.getItem("admin-token");
       if (!token) throw new Error("No admin token found!");
+
+      // Log the request payload for debugging
+      const requestPayload = {
+        "teamName": fetchedDataAfterQR.teamName,
+        "isAllPresent": isAllPresent,
+        "mobile": scannedData,
+        "PresentMembers": PresentMembers
+      };
+      console.log("Request Payload:", requestPayload);
+
       const response = await axios.post(
         "https://think-charge-quiz-app.onrender.com/mark-present",
-        {
-          "teamName":fetchedDataAfterQR.teamName,
-          "isAllPresent":isAllPresent,
-          "mobile":scannedData,
-          "PresentMembers":PresentMembers
-        },
+        requestPayload,
         { headers: { "scee-event-admin-token": token } }
-        );
-      if(response.status==201){
+      );
+      
+      console.log("Response:", response);
+      
+      if(response.status === 201){
         setselectingMemebrLists(false)
         setIsAllPresent(false)
         setFetchedDataAfterQR({})
@@ -154,58 +160,22 @@ export default function AttendanceAdminPage() {
       }else{
         alert("Failed to Mark Attendance.");
       }
-  }catch(err){
-    console.log(err)
-    alert("Failed to Mark Attendance or May be Attendace Already Marked. Check and Try Again!");
-
-  }finally{
-    setIsLoading(false)
-  }}
-
-  const handleFileChange = async (e) => {
-    if (e.target.files.length > 0) {
-      const imageFile = e.target.files[0];
-      const imageUrl = URL.createObjectURL(imageFile);
-      setFile(imageUrl); // Update the state for UI
-  
-      try {
-        setIsLoading(true)
-        const QRresponse = await QrScanner.scanImage(imageFile, { returnDetailedScanResult: true });
-        if (QRresponse) {
-          setScannedData(QRresponse.data);
-          try{
-            const token = localStorage.getItem("admin-token");
-            if (!token) throw new Error("No admin token found!");
-            const response = await axios.get(`https://think-charge-quiz-app.onrender.com/fetch-team/${QRresponse.data}`,{
-              headers: { "scee-event-admin-token": token }
-            })
-            if(response.status==200){
-              setFetchedDataAfterQR(response.data)
-            }else{
-              alert("No Teams Found!")
-            }
-          }catch(err){
-            console.log(err)
-            if(err.status==404){
-              setselectingMemebrLists(false)
-              setIsAllPresent(false)
-              setFetchedDataAfterQR({})
-              setScannedData(null)
-              setFile(null)
-              alert("No Teams Found!")
-            }
-          }
-        } else {
-          alert("No QR Found");
-        }
-      } catch (error) {
-        console.error("QR Scanning Error:", error);
-        alert("Unsupported image type or no QR code detected.");
-      } finally{
-        setIsLoading(false)
+    }catch(err){
+      console.error("Error details:", {
+        message: err.message,
+        response: err.response?.data,
+        status: err.response?.status
+      });
+      
+      if (err.response?.status === 400) {
+        alert("Invalid request data. Please check the team information and try again.");
+      } else {
+        alert("Failed to Mark Attendance or May be Attendance Already Marked. Check and Try Again!");
       }
+    }finally{
+      setIsLoading(false)
     }
-  };
+  }
   
 
   useEffect(() => {
@@ -247,7 +217,6 @@ export default function AttendanceAdminPage() {
           { headers: { "scee-event-admin-token": token } }
         );
         setParticipantDetails(response.data.reports);
-        console.log(response.data.reports)
       } catch (error) {
         console.error("Error fetching team details:", error);
       }finally{
@@ -374,14 +343,14 @@ const TeamViewList = ()=>{
 const SelctingMemebrsList = ()=>{
   return <div className="TeamViewOverlay" onClick={()=>{setselectingMemebrLists(false)}}>
     <div className="TeamViewListContainer" onClick={(e)=>{e.stopPropagation()}}>
-      <span className='TeamSelectingMembersTeamName'>{fetchedDataAfterQR.teamName}</span>
+      <span className='TeamSelectingMembersTeamName'>{fetchedDataAfterQR?.teamName || 'Loading...'}</span>
       <span>{scannedData}</span>
       <div className='TeamSelectingMembersAllPresentChoice'>
         <span>All Present: </span>
         <input className="switch" type="checkbox" checked={isAllPresent} onChange={()=>{setIsAllPresent((val)=>!val)}}></input>
       </div>
-      {isAllPresent?null:(
-        fetchedDataAfterQR.membersList.map((data,index)=>(<div className="MemebersListItem">
+      {isAllPresent ? null : (
+        (fetchedDataAfterQR?.membersList || []).map((data,index)=>(<div key={index} className="MemebersListItem">
             <input
               className="MemebersListItemCheckBox"
               type="checkbox"
