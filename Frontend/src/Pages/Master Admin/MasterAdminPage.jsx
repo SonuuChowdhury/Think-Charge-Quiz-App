@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import "./MasterAdminPage.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Loader from "../../Components/Loader/Loader.jsx";
@@ -17,11 +17,15 @@ import {
   faBan,
   faPen,
   faMedal,
+  faQrcode,
 } from "@fortawesome/free-solid-svg-icons";
+import QrScanner from 'qr-scanner';
 
 export default function MasterAdminPage() {
   const navigate = useNavigate();
   const [isLoading, setisLoading] = useState(false);
+  const [isScanningQR, setIsScanningQR] = useState(false);
+  const [scanError, setScanError] = useState(null);
   const [deletingTeamDetails, setDeletingTeamDetails] = useState({});
   const [deletingTeam, setDeletingTeam] = useState(false);
   const [deletingAllTeams, setDeletingAllTeams] = useState(false);
@@ -36,6 +40,8 @@ export default function MasterAdminPage() {
   const [quizStartingTime, setQuizStartingTime] = useState("");
   const [isViewingQuizStartingTime, setIsViewingQuizStartingTime] = useState(false);
   const [quizSchedule, setQuizSchedule] = useState(false);
+  const videoRef = useRef(null);
+  const scannerRef = useRef(null);
 
   useEffect(() => {
     const checkRole = () => {
@@ -117,7 +123,6 @@ export default function MasterAdminPage() {
           },
         }
       );
-      console.log(response);
       if (response.status == 200) {
         setLockOpenKey(response.data.passCode);
       } else {
@@ -304,9 +309,15 @@ export default function MasterAdminPage() {
             <FontAwesomeIcon icon={faPen} />
             Edit Quiz Questions
           </button>
-          <button className="SideControlBarMainControlOptions">
-            <FontAwesomeIcon icon={faBan} />
-            Ban or Report Team
+          <button 
+            className="SideControlBarMainControlOptions"
+            onClick={() => {
+              setIsScanningQR(true);
+              setisSideControlBarOpen(false);
+            }}
+          >
+            <FontAwesomeIcon icon={faQrcode} />
+            Ban Team (QR)
           </button>
           <button className="SideControlBarMainControlOptions">
             <FontAwesomeIcon icon={faMedal} />
@@ -657,9 +668,175 @@ export default function MasterAdminPage() {
     );
   };
 
+  const handleQRCodeScan = async (qrData) => {
+    try {
+      setisLoading(true);
+      setScanError(null);
+
+      const mobileNumber = qrData;
+
+      const token = localStorage.getItem("admin-token");
+      if (!token) {
+        throw new Error("No admin token found!");
+      }
+
+      const response = await axios.post(
+        `https://think-charge-quiz-app.onrender.com/ban-team/${mobileNumber}`,
+        {},
+        {
+          headers: {
+            "scee-event-admin-token": token,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        alert(`Team with mobile number ${mobileNumber} has been banned successfully`);
+        setRefresh((val) => !val); // Refresh the team list
+        stopScanner();
+        setIsScanningQR(false);
+      } else {
+        throw new Error(response.data.msg || 'Failed to ban team');
+      }
+    } catch (err) {
+      setScanError(err.message);
+      alert(err.message);
+    } finally {
+      setisLoading(false);
+    }
+  };
+
+  const startScanner = async () => {
+    try {
+      const videoElement = videoRef.current;
+      if (!videoElement) {
+        console.log("Video element not found");
+        return;
+      }
+
+      // Stop any existing scanner
+      if (scannerRef.current) {
+        await scannerRef.current.stop();
+        scannerRef.current = null;
+      }
+
+      // Create new scanner instance
+      scannerRef.current = new QrScanner(
+        videoElement,
+        (result) => {
+          if (result) {
+            handleQRCodeScan(result.data);
+          }
+        },
+        {
+          highlightScanRegion: true,
+          highlightCodeOutline: true,
+          returnDetailedScanResult: true,
+          preferredCamera: 'environment',
+        }
+      );
+
+      // Start the scanner
+      await scannerRef.current.start();
+      console.log("Scanner started successfully");
+    } catch (err) {
+      console.error("Detailed scanner error:", err);
+      setScanError("Failed to start camera. Please check camera permissions.");
+      // Don't close the popup on error, let user try again
+    }
+  };
+
+  const stopScanner = () => {
+    if (scannerRef.current) {
+      scannerRef.current.stop();
+      scannerRef.current = null;
+    }
+  };
+
+  useEffect(() => {
+    let mounted = true;
+
+    const initializeScanner = async () => {
+      if (isScanningQR && mounted) {
+        try {
+          await startScanner();
+        } catch (err) {
+          console.error("Scanner initialization error:", err);
+          if (mounted) {
+            setScanError("Failed to initialize camera. Please try again.");
+          }
+        }
+      }
+    };
+
+    initializeScanner();
+
+    return () => {
+      mounted = false;
+      stopScanner();
+    };
+  }, [isScanningQR]);
+
+  const QRScannerComponent = () => {
+    return (
+      <div
+        className="ViewActionHandellerBackground"
+        onClick={(e) => {
+          // Only close if clicking the background, not the content
+          if (e.target === e.currentTarget) {
+            stopScanner();
+            setIsScanningQR(false)
+          }
+        }}
+      >
+        <div
+          className="ViewActionHandellerBox qr-scanner-box"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <h2 className="qr-scanner-title">Scan QR Code to Ban Team</h2>
+          
+          {scanError && (
+            <div className="error-message">
+              {scanError}
+              <button 
+                className="retry-button"
+                onClick={() => {
+                  setScanError(null);
+                  startScanner();
+                }}
+              >
+                Retry
+              </button>
+            </div>
+          )}
+
+          <div className="qr-scanner-video-container">
+            <video 
+              ref={videoRef} 
+              className="qr-scanner-video"
+              style={{ width: '100%', height: '100%' }}
+            ></video>
+          </div>
+
+          <div className="qr-scanner-actions">
+            <button 
+              className="close-button"
+              onClick={()=>{stopScanner
+                setIsScanningQR(false)
+              }}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <>
       {isLoading && <Loader />}
+      {isScanningQR && <QRScannerComponent />}
       {isViewingQuizStartingTime && <ViewQuizStartingTimeHandeller />}
       {isEditingQuizStartingTime && <QuizScheduleHandeller />}
       {deletingAllTeams && <DeleteAllActionHandeller />}
