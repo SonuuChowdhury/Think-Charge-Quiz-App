@@ -1,5 +1,5 @@
 import express from 'express';
-import AttendanceDetailsSchema from '../../models/Participants/AttendanceDetails.js';
+import ParticipantsDetails from '../../models/Participants/ParticipantsDetails.js';
 
 const router = express.Router();
 
@@ -12,7 +12,7 @@ router.post('/ban-team/:mobile', async (req, res) => {
       return res.status(400).json({ message: 'Mobile number is required' });
     }
 
-    const team = await AttendanceDetailsSchema.findOne({ mobile: Number(mobile) });
+    const team = await ParticipantsDetails.findOne({ mobile: Number(mobile) });
     console.log(`Team found: ${team}`);
     
 
