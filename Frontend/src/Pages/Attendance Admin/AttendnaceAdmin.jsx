@@ -10,6 +10,8 @@ import Loader from '../../Components/Loader/Loader.jsx'
 
 export default function AttendanceAdminPage() {
   const navigate = useNavigate();
+  const videoRef = useRef(null);
+  const scannerRef = useRef(null);
   const [participantDetails, setParticipantDetails] = useState([]);
   const [PresentTeams, setPresentTeams] = useState([]);
   const [AbsentTeams, setAbsentTeams] = useState([]);
@@ -28,12 +30,90 @@ export default function AttendanceAdminPage() {
   const [isselectingMemebrLists, setselectingMemebrLists] = useState(false)
   const [Refresh, setRefresh] = useState(false)
 
-  useEffect(() => {
-    if(!isScanning){
-      setScannedData(null)
-      setFile(null)
+  const startScanner = async () => {
+    try {
+      setIsLoading(true);
+      
+      // Request camera permission first
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        // Stop the stream immediately after getting permission
+        stream.getTracks().forEach(track => track.stop());
+      } catch (err) {
+        alert("Camera permission is required to scan QR codes. Please allow camera access and try again.");
+        setIsScanning(false);
+        setIsLoading(false);
+        return;
+      }
+
+      const scanner = new QrScanner(
+        videoRef.current,
+        async (result) => {
+          if (result) {
+            setScannedData(result.data);
+            try {
+              const token = localStorage.getItem("admin-token");
+              if (!token) throw new Error("No admin token found!");
+              const response = await axios.get(
+                `https://think-charge-quiz-app.onrender.com/fetch-team/${result.data}`,
+                {
+                  headers: { "scee-event-admin-token": token }
+                }
+              );
+              if (response.status === 200) {
+                setFetchedDataAfterQR(response.data);
+                // Stop scanning after successful scan
+                scanner.stop();
+                setIsScanning(false);
+                setselectingMemebrLists(true);
+              } else {
+                alert("No Teams Found!");
+              }
+            } catch (err) {
+              console.log(err);
+              if (err.status === 404) {
+                setselectingMemebrLists(false);
+                setIsAllPresent(false);
+                setFetchedDataAfterQR({});
+                setScannedData(null);
+                alert("No Teams Found!");
+              }
+            }
+          }
+        },
+        {
+          returnDetailedScanResult: true,
+          highlightScanRegion: true,
+          highlightCodeOutline: true,
+        }
+      );
+      
+      await scanner.start();
+      scannerRef.current = scanner;
+    } catch (error) {
+      console.error("QR Scanner Error:", error);
+      alert("Failed to start camera. Please check camera permissions.");
+    } finally {
+      setIsLoading(false);
     }
-  }, [isScanning])
+  };
+
+  const stopScanner = () => {
+    if (scannerRef.current) {
+      scannerRef.current.stop();
+      scannerRef.current = null;
+    }
+  };
+
+  useEffect(() => {
+    if (isScanning) {
+      startScanner();
+    } else {
+      stopScanner();
+      setScannedData(null);
+      setFetchedDataAfterQR({});
+    }
+  }, [isScanning]);
 
   const handleCheckboxChange = (event) => {
     const { value, checked } = event.target;
@@ -351,30 +431,19 @@ const SelctingMemebrsList = ()=>{
         </button>
       </div>
 
-      {isScanning? <div className="ScannerArea">
-        <div className="ScanerAreaImageArea">
-          {file?
-          <img className='ScannerQRImage' src={file} alt="QR Image" />: <label htmlFor="qrinput" className="ScannerAreaImageAddArea">
-              <FontAwesomeIcon icon={faQrcode} />
-              <span>Add QR Code</span>
-          </label>}
-          <input type="file" id="qrinput" onChange={handleFileChange}/>
+      {isScanning ? (
+        <div className="ScannerArea">
+          <div className="ScanerAreaImageArea">
+            <video ref={videoRef} className="ScannerVideo" />
+          </div>
+          <div className="ScannerControl">
+            <span className="ScannerControlMobile">
+              {scannedData}
+            </span>
+            <span>{fetchedDataAfterQR.teamName}</span>
+          </div>
         </div>
-        <div className="ScannerControl">
-          <span className="ScannerControlMobile">  
-            {scannedData} 
-          </span>
-          <span>{fetchedDataAfterQR.teamName}</span>
-          <button className="ScannerControlAddButton" disabled={!file} onClick={()=>{
-            setselectingMemebrLists(true)
-            setPresentMembers([])
-            setIsAllPresent(false)
-          }}>
-            ADD
-          </button>
-        </div>
-      </div>
-      :null}
+      ) : null}
 
       <div className="PresentTeamsSectionArea">
         <span className="PresntTeamSectionHeader">
