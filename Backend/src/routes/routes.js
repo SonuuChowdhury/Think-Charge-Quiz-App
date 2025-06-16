@@ -16,6 +16,7 @@ import GetLockOpenKey from "../api/Master Admin/GetLockOpenKey.js";
 import FetchTeams from "../api/Master Admin/FetchTeams.js";
 import DeleteAllTeams from "../api/Master Admin/DeleteAllTeams.js";
 import GetQuizStartingTime from "../api/Master Admin/GetQuizeTime.js";
+import BanTeam from "../api/Master Admin/BanTeam.js";
 
 
 // Attendnace Admin Task 
