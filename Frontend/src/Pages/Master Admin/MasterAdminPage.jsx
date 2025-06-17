@@ -605,7 +605,7 @@ export default function MasterAdminPage() {
           );
 
           if (response.status === 200) {
-            setQuizTime(new Date(response.data.StartQuizOn));
+            setQuizTime(response.data.StartQuizOn);
           } else {
             throw new Error(response.data.msg || 'Failed to fetch quiz time');
           }
@@ -619,20 +619,26 @@ export default function MasterAdminPage() {
       fetchQuizTime();
     }, []);
 
-    const formatTime = (date) => {
-      if (!date) return '';
+    const formatTime = (dateString) => {
+      if (!dateString) return '';
       
-      const hours = date.getHours();
-      const minutes = String(date.getMinutes()).padStart(2, '0');
+      // Parse the ISO date string
+      const date = new Date(dateString);
+      
+      // Get hours and minutes directly from the date
+      const hours = date.getUTCHours();
+      const minutes = String(date.getUTCMinutes()).padStart(2, '0');
       const ampm = hours >= 12 ? 'PM' : 'AM';
       const hours12 = hours % 12 === 0 ? 12 : hours % 12;
       
-      const day = String(date.getDate()).padStart(2, '0');
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const year = date.getFullYear();
+      const day = String(date.getUTCDate()).padStart(2, '0');
+      const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+      const year = date.getUTCFullYear();
 
       return `${hours12}:${minutes} ${ampm}, ${day}/${month}/${year}`;
     };
+
+    
 
     return (
       <div 
