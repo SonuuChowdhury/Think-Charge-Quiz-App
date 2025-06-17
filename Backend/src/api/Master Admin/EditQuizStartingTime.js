@@ -32,6 +32,8 @@ EditQuizStartingTime.post('/edit-start-time', async (req, res) => {
     quizSettings.StartQuizOn = updatedTime;
     await quizSettings.save();
 
+    console.log(`Quiz time updated - Set Now: ${setNow}, Time: ${updatedTime.toISOString()}`);
+
     return res.status(200).json({ 
       msg: "Quiz start time updated successfully", 
       StartQuizOn: updatedTime.toISOString() // Convert to ISO string for JSON response
