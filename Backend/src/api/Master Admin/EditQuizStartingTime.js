@@ -6,7 +6,7 @@ const EditQuizStartingTime = express.Router();
 
 EditQuizStartingTime.post('/edit-start-time', async (req, res) => {
   try {
-    const { setNow, time } = req.body;
+    const { setNow, time , delete} = req.body;
 
     // Fetch the latest quiz settings
     const quizSettings = await QuizManagementDetailsSchema.findOne();
@@ -16,6 +16,10 @@ EditQuizStartingTime.post('/edit-start-time', async (req, res) => {
     }
 
     let updatedTime;
+
+    if (delete) {
+      updatedTime = null;
+    }
 
     if (setNow) {
       // Set the current IST time
@@ -32,11 +36,11 @@ EditQuizStartingTime.post('/edit-start-time', async (req, res) => {
     quizSettings.StartQuizOn = updatedTime;
     await quizSettings.save();
 
-    console.log(`Quiz time updated - Set Now: ${setNow}, Time: ${updatedTime.toISOString()}`);
+    console.log(`Quiz time updated - Set Now: ${setNow}, Time: ${updatedTime?.toISOString()}, Delete: ${delete}`);
 
     return res.status(200).json({ 
-      msg: "Quiz start time updated successfully", 
-      StartQuizOn: updatedTime.toISOString() // Convert to ISO string for JSON response
+      msg: delete ? "Quiz start time deleted successfully" : "Quiz start time updated successfully", 
+      StartQuizOn: updatedTime ? updatedTime.toISOString() : null // Handle null case for deletion
     });
 
   } catch (error) {
