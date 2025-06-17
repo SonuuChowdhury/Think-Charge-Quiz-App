@@ -670,6 +670,9 @@ export default function MasterAdminPage() {
 
   const handleQRCodeScan = async (qrData) => {
     try {
+      // Stop scanner immediately to prevent multiple scans
+      stopScanner();
+      
       setisLoading(true);
       setScanError(null);
 
@@ -692,8 +695,9 @@ export default function MasterAdminPage() {
 
       if (response.status === 200) {
         alert(`Team with mobile number ${mobileNumber} has been banned successfully`);
-        stopScanner();
         setIsScanningQR(false);
+        // Refresh the list after successful ban
+        setRefresh(prev => !prev);
       } else {
         throw new Error(response.data.msg || 'Failed to ban team');
       }
@@ -702,7 +706,6 @@ export default function MasterAdminPage() {
       alert(err.message);
     } finally {
       setisLoading(false);
-      setRefresh((val) => !val); // Refresh the team list
     }
   };
 
