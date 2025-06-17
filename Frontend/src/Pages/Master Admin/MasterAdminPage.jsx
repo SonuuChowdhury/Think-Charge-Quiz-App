@@ -398,6 +398,41 @@ export default function MasterAdminPage() {
     const minutes = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0'));
     const periods = ['AM', 'PM'];
 
+    const handleDeleteTime = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        const token = localStorage.getItem("admin-token");
+        if (!token) {
+          throw new Error("No admin token found!");
+        }
+
+        const response = await axios.post(
+          "https://think-charge-quiz-app.onrender.com/edit-start-time",
+          {
+            shouldDelete: true
+          },
+          {
+            headers: {
+              "scee-event-admin-token": token,
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          setQuizStartingTime("");
+          setIsEditingQuizStartingTime(false);
+        } else {
+          throw new Error(response.data.msg || 'Failed to delete quiz time');
+        }
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
     const handleTimeChange = async () => {
       try {
         setIsLoading(true);
@@ -552,13 +587,6 @@ export default function MasterAdminPage() {
 
           <div className="quiz-schedule-actions">
             <button 
-              className="set-now-button"
-              onClick={handleSetNow}
-              disabled={isLoading}
-            >
-              Set Now
-            </button>
-            <button 
               className="cancel-button"
               onClick={() => setIsEditingQuizStartingTime(false)}
               disabled={isLoading}
@@ -566,12 +594,28 @@ export default function MasterAdminPage() {
               Cancel
             </button>
             <button 
+              className="delete-button"
+              onClick={handleDeleteTime}
+              disabled={isLoading}
+            >
+              Delete Time
+            </button>
+            <button 
+              className="set-now-button"
+              onClick={handleSetNow}
+              disabled={isLoading}
+            >
+              Set Now
+            </button>
+            
+            <button 
               className="update-button"
               onClick={handleTimeChange}
               disabled={isLoading}
             >
               {isLoading ? 'Updating...' : 'Update'}
             </button>
+            
           </div>
         </div>
       </div>
@@ -605,6 +649,7 @@ export default function MasterAdminPage() {
           );
 
           if (response.status === 200) {
+            console.log(response.data.StartQuizOn);
             setQuizTime(response.data.StartQuizOn);
           } else {
             throw new Error(response.data.msg || 'Failed to fetch quiz time');
