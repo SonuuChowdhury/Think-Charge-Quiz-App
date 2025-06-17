@@ -19,6 +19,11 @@ EditQuizStartingTime.post('/edit-start-time', async (req, res) => {
 
     if (shouldDelete) {
       updatedTime = null;
+      console.log(`Quiz time deleted - Delete: ${shouldDelete}`);
+      return res.status(200).json({ 
+        msg: "Quiz start time deleted successfully",
+        StartQuizOn: null
+      });
     }
 
     if (setNow) {
@@ -36,11 +41,11 @@ EditQuizStartingTime.post('/edit-start-time', async (req, res) => {
     quizSettings.StartQuizOn = updatedTime;
     await quizSettings.save();
 
-    console.log(`Quiz time updated - Set Now: ${setNow}, Time: ${updatedTime?.toISOString()}, Delete: ${shouldDelete}`);
+    console.log(`Quiz time updated - Set Now: ${setNow}, Time: ${updatedTime?.toISOString()}`);
 
     return res.status(200).json({ 
-      msg: shouldDelete ? "Quiz start time deleted successfully" : "Quiz start time updated successfully", 
-      StartQuizOn: updatedTime ? updatedTime.toISOString() : null // Handle null case for deletion
+      msg: setNow ? "Quiz start time set to current time" : "Quiz start time updated successfully", 
+      StartQuizOn: updatedTime.toISOString()
     });
 
   } catch (error) {
