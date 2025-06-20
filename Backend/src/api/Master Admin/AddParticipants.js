@@ -53,13 +53,13 @@ AddParticipant.post('/add-participant', async (req, res) => {
     const groupLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     let groupName = 'A';
 
-    // Fetch all participants to count teams per group
-    const allParticipants = await ParticipantsDetails.find({}, 'groupName');
+    // Use aggregation to count teams per group
+    const groupCountsAgg = await ParticipantsDetails.aggregate([
+      { $group: { _id: "$groupName", count: { $sum: 1 } } }
+    ]);
     const groupCounts = {};
-
-    allParticipants.forEach(participant => {
-      const group = participant.groupName;
-      groupCounts[group] = (groupCounts[group] || 0) + 1;
+    groupCountsAgg.forEach(g => {
+      groupCounts[g._id] = g.count;
     });
 
     // Find the first group with less than 10 teams, or create a new group
