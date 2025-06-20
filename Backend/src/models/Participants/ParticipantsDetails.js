@@ -7,6 +7,7 @@ const ParticipantsDetailsSchema = new mongoose.Schema({
   teamName: { type: String, required: true }, 
   mobile: { type: Number, required: true }, 
   isBanned: { type: Boolean, default: false },
+  groupName: { type: String, required: true },
   email:{ type: String, required: true }, 
   password: { type: String, required: true },
   LastLogin: { type: Date, default: null}, 

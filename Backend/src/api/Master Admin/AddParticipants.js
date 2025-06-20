@@ -49,6 +49,28 @@ AddParticipant.post('/add-participant', async (req, res) => {
     // Generate password using first 5 digits of mobile + '@password'
     const GenPassword = mobile.toString().slice(0, 5) + "@password";
 
+    // Determine group name based on existing teams
+    const groupLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let groupName = 'A';
+
+    // Fetch all participants to count teams per group
+    const allParticipants = await ParticipantsDetails.find({}, 'groupName');
+    const groupCounts = {};
+
+    allParticipants.forEach(participant => {
+      const group = participant.groupName;
+      groupCounts[group] = (groupCounts[group] || 0) + 1;
+    });
+
+    // Find the first group with less than 10 teams, or create a new group
+    for (let i = 0; i < groupLetters.length; i++) {
+      const letter = groupLetters[i];
+      if (!groupCounts[letter] || groupCounts[letter] < 10) {
+        groupName = letter;
+        break;
+      }
+    }
+
     // Create new participant entry
     const newParticipant = new ParticipantsDetails({
       teamName,
@@ -57,6 +79,7 @@ AddParticipant.post('/add-participant', async (req, res) => {
       password: await hashPassword(GenPassword),
       joined: await GetCureentIST(),
       teamMembers,
+      groupName,
     });
 
     await newParticipant.save();
