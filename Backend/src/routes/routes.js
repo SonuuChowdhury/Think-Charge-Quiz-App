@@ -17,6 +17,7 @@ import FetchTeams from "../api/Master Admin/FetchTeams.js";
 import DeleteAllTeams from "../api/Master Admin/DeleteAllTeams.js";
 import GetQuizStartingTime from "../api/Master Admin/GetQuizeTime.js";
 import BanTeam from "../api/Master Admin/BanTeam.js";
+import FetchGroupsInfo from "../api/Master Admin/FetchGroupsInfo.js";
 
 
 // Attendnace Admin Task 
@@ -49,6 +50,7 @@ router.get('/fetch-teams',MasterAdminTokenVerification,FetchTeams)
 router.post('/edit-start-time',MasterAdminTokenVerification, EditQuizStartingTime)
 router.get('/get-start-time',MasterAdminTokenVerification, GetQuizStartingTime)
 router.post('/ban-team/:mobile', MasterAdminTokenVerification, BanTeam)
+router.get('/fetch-groups-info',MasterAdminTokenVerification,FetchGroupsInfo)
 
 
 // Attendance Admin Routes 
