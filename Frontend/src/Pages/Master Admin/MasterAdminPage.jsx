@@ -42,6 +42,9 @@ export default function MasterAdminPage() {
   const [quizSchedule, setQuizSchedule] = useState(false);
   const videoRef = useRef(null);
   const scannerRef = useRef(null);
+  const [groupFilter, setGroupFilter] = useState("All");
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const checkRole = () => {
@@ -895,6 +898,34 @@ export default function MasterAdminPage() {
     </div>
   );
 
+  // Helper: get all group letters present in teams
+  const groupLetters = Array.from(new Set(participantDetails.map(t => t.groupName))).sort();
+
+  // Filtering logic
+  const filteredTeams = participantDetails.filter(team => {
+    // Group filter
+    if (groupFilter !== "All" && team.groupName !== groupFilter) return false;
+    // Status filter
+    if (statusFilter === "Banned" && !team.isBanned) return false;
+    // Search filter
+    if (searchTerm.trim() !== "") {
+      const term = searchTerm.toLowerCase();
+      const nameMatch = team.teamName?.toLowerCase().includes(term);
+      const mobileMatch = team.mobile?.toString().includes(term);
+      return nameMatch || mobileMatch;
+    }
+    return true;
+  });
+
+  // Helper: highlight search term in text
+  function highlight(text) {
+    if (!searchTerm) return text;
+    const regex = new RegExp(`(${searchTerm})`, "gi");
+    return text.split(regex).map((part, i) =>
+      regex.test(part) ? <span key={i} className="highlight-search">{part}</span> : part
+    );
+  }
+
   return (
     <>
       {isLoading && <Loader />}
@@ -949,23 +980,62 @@ export default function MasterAdminPage() {
       <div className="MasterTeamListSectionArea">
         <span className="MasterTeamListSectionAreaHeader">Teams</span>
 
+        {/* Filter/Search Row */}
+        <div className="masteradmin-filter-row">
+          <div className="masteradmin-filter-group">
+            <label htmlFor="groupFilter">Group:</label>
+            <select
+              id="groupFilter"
+              value={groupFilter}
+              onChange={e => setGroupFilter(e.target.value)}
+              className="masteradmin-filter-select"
+            >
+              <option value="All">All</option>
+              {groupLetters.map(letter => (
+                <option key={letter} value={letter}>{letter}</option>
+              ))}
+            </select>
+          </div>
+          <div className="masteradmin-filter-group">
+            <label htmlFor="statusFilter">Status:</label>
+            <select
+              id="statusFilter"
+              value={statusFilter}
+              onChange={e => setStatusFilter(e.target.value)}
+              className="masteradmin-filter-select"
+            >
+              <option value="All">All</option>
+              <option value="Banned">Banned</option>
+            </select>
+          </div>
+          <div className="masteradmin-filter-group masteradmin-search-group">
+            <input
+              type="text"
+              placeholder="Search by name or mobile..."
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+              className="masteradmin-search-input"
+            />
+          </div>
+        </div>
+
         <div className="MasterTeamListSection">
-          {participantDetails.length == 0 && (
+          {filteredTeams.length == 0 && (
             <span className="NoTeamsFoundText">No Teams Found</span>
           )}
-          {participantDetails.map((data, index) => (
+          {filteredTeams.map((data, index) => (
             <div className={`MasterTeamListSectionItem ${data.isBanned ? 'banned' : ''}`} key={index}>
               <div className="MasterTeamListSectionItemMataDetailsSection">
                 <div className="team-name-container">
                   <span className="MasterTeamListSectionItemTeamName">
-                    {data.teamName}
+                    {highlight(data.teamName)}
                   </span>
                   {data.groupName && (
                     <span className="group-name-badge">{data.groupName}</span>
                   )}
                   {data.isBanned && <BanTag />}
                 </div>
-                <span>{data.mobile}</span>
+                <span>{highlight(data.mobile?.toString())}</span>
                 <span>{data.email ? data.email : "No Email"}</span>
               </div>
 

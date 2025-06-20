@@ -24,7 +24,10 @@ export default function AddTeams() {
   const [success, setSuccess] = useState("");
   const [expanded, setExpanded] = useState({});
   const [teamStatusArray, setTeamStatusArray] = useState([]);
-  const [updating, setUpdating] = useState(false); // your condition
+  const [updating, setUpdating] = useState(false);
+  const [groupFilter, setGroupFilter] = useState("All");
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
   const updatingRef = useRef(updating);
