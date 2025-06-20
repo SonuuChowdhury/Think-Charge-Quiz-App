@@ -1,5 +1,5 @@
 import express from "express";
-import Participants from "../../models/Participants.js";
+import ParticipantsDetails from "../../models/Participants/ParticipantsDetails.js";
 
 const FetchGroupsInfo = express.Router();
 
