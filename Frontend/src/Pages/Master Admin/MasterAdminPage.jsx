@@ -302,8 +302,9 @@ export default function MasterAdminPage() {
             <FontAwesomeIcon icon={faClock} />
             View Quiz Time
           </button>
-          <button className="SideControlBarMainControlOptions" onClick={() => {setIsEditingQuizStartingTime(true)
-              setisSideControlBarOpen(false)
+          <button className="SideControlBarMainControlOptions" onClick={() => {
+              navigate("/master-admin/edit-quiz-times");
+              setisSideControlBarOpen(false);
             }} >
             <FontAwesomeIcon icon={faClock} />
             Schedule Quiz
@@ -925,7 +926,7 @@ export default function MasterAdminPage() {
       regex.test(part) ? <span key={i} className="highlight-search">{part}</span> : part
     );
   }
-
+  
   return (
     <>
       {isLoading && <Loader />}

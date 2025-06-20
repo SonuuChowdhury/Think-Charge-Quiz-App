@@ -8,6 +8,7 @@ import MasterAdminPage from './Pages/Master Admin/MasterAdminPage';
 import AttendanceAdminPage from './Pages/Attendance Admin/AttendnaceAdmin';
 import AddTeam from './Pages/Master Admin/Pages/Add Teams/AddTeams';
 import FileFormatInfo from './Pages/Master Admin/Pages/Add Teams/File Format Info/FileFormatInfo';
+import SetQuizTime from './Pages/Master Admin/Pages/Set Quiz Time/SetQuizTime';
 
 function App() {
 
@@ -23,6 +24,7 @@ function App() {
         <Route path="/attendance-admin" element={<AttendanceAdminPage/>} />
         <Route path="/master-admin/add-team" element={<AddTeam/>} />
         <Route path="/master-admin/add-team/file-format-info" element={<FileFormatInfo/>} />
+        <Route path="/master-admin/edit-quiz-times" element={<SetQuizTime/>} />
       </Routes>
     </Router>
 
