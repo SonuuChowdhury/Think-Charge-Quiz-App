@@ -114,7 +114,7 @@ export default function AddTeams() {
     setExpanded((prev) => ({ ...prev, [idx]: !prev[idx] }));
   };
 
-  // FINAL HandleUpdate function
+  // FINAL HandleUpdate function with 1 second delay between each call, preserving all original functionality
   const HandleUpdate = async () => {
     setUpdating(true);
     try {
@@ -145,59 +145,66 @@ export default function AddTeams() {
 
       let processedCount = 0;
 
-      await Promise.all(
-        pendingEntries.map(async ({ number, idx }) => {
-          const team = teamMap.get(number);
-          if (!team) {
+      // Helper function to wait for a given ms
+      const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+      // Sequentially process each pending entry with 1 second delay
+      for (let i = 0; i < pendingEntries.length; i++) {
+        const { number, idx } = pendingEntries[i];
+        const team = teamMap.get(number);
+        if (!team) {
+          setTeamStatusArray((prev) => {
+            const arr = [...prev];
+            arr[idx] = {
+              ...arr[idx],
+              status: "Error",
+              msg: "No matching team data found",
+            };
+            return arr;
+          });
+          console.log(`No matching team for mobile: ${number}`);
+        } else {
+          try {
+            const response = await axios.post(
+              "https://think-charge-quiz-app.onrender.com/add-participant",
+              team,
+              { headers: { "scee-event-admin-token": token } }
+            );
+            setTeamStatusArray((prev) => {
+              const arr = [...prev];
+              arr[idx] = {
+                ...arr[idx],
+                status: response.status === 201 ? "Added" : "Error",
+                msg:
+                  response.data?.msg ||
+                  (response.status === 201 ? "Success" : "Unknown error"),
+              };
+              return arr;
+            });
+          } catch (error) {
             setTeamStatusArray((prev) => {
               const arr = [...prev];
               arr[idx] = {
                 ...arr[idx],
                 status: "Error",
-                msg: "No matching team data found",
+                msg:
+                  error.response?.data?.msg ||
+                  error.message ||
+                  "Request failed",
               };
               return arr;
             });
-            console.log(`No matching team for mobile: ${number}`);
-          } else {
-            try {
-              const response = await axios.post(
-                "https://think-charge-quiz-app.onrender.com/add-participant",
-                team,
-                { headers: { "scee-event-admin-token": token } }
-              );
-              setTeamStatusArray((prev) => {
-                const arr = [...prev];
-                arr[idx] = {
-                  ...arr[idx],
-                  status: response.status === 201 ? "Added" : "Error",
-                  msg:
-                    response.data?.msg ||
-                    (response.status === 201 ? "Success" : "Unknown error"),
-                };
-                return arr;
-              });
-            } catch (error) {
-              setTeamStatusArray((prev) => {
-                const arr = [...prev];
-                arr[idx] = {
-                  ...arr[idx],
-                  status: "Error",
-                  msg:
-                    error.response?.data?.msg ||
-                    error.message ||
-                    "Request failed",
-                };
-                return arr;
-              });
-            }
           }
-          processedCount += 1;
-          setpercentage(
-            Math.round((processedCount / pendingEntries.length) * 100)
-          );
-        })
-      );
+        }
+        processedCount += 1;
+        setpercentage(
+          Math.round((processedCount / pendingEntries.length) * 100)
+        );
+        // Wait for 1 second before next call, except after the last one
+        if (i < pendingEntries.length - 1) {
+          await wait(1000);
+        }
+      }
     } catch (error) {
       console.error("System error:", error);
     } finally {

@@ -960,6 +960,9 @@ export default function MasterAdminPage() {
                   <span className="MasterTeamListSectionItemTeamName">
                     {data.teamName}
                   </span>
+                  {data.groupName && (
+                    <span className="group-name-badge">{data.groupName}</span>
+                  )}
                   {data.isBanned && <BanTag />}
                 </div>
                 <span>{data.mobile}</span>
