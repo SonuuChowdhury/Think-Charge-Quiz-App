@@ -6,7 +6,7 @@ const FetchGroupsInfo = express.Router();
 FetchGroupsInfo.get('/fetch-groups-info', async (req, res) => {
   try {
     // Fetch all participants
-    const participants = await Participants.find({}, "groupName");
+    const participants = await ParticipantsDetails.find({}, "groupName");
 
     // Count teams in each group
     const groupCounts = {};
