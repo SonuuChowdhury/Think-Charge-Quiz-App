@@ -7,7 +7,10 @@ const QuizManagementLayout = new mongoose.Schema({
   passCode: {type: String},
   passCodeGeneratedOn:{type: Date},
   LastSetAssigned: {type: String},
-  StartQuizOn: { type: Date}, 
+  StartQuizOn: [{
+    groupName: { type: String },
+    startTime: { type: Date }
+  }]
 });
 
 const QuizManagementDetailsSchema = loginCredentialsConnection.model('quizmanagementdetails', QuizManagementLayout);
