@@ -1,10 +1,149 @@
 import './SetQuizTime.css';
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEdit, faClock, faUsers } from "@fortawesome/free-solid-svg-icons";
 
 const SetQuizTime = () => {
   const navigate = useNavigate();
+  const [groups, setGroups] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [editIndex, setEditIndex] = useState(null);
+  const [editDate, setEditDate] = useState("");
+  const [editTime, setEditTime] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    const checkRole = () => {
+      const role = localStorage.getItem("admin-role");
+      if (role !== "masterAdmin") {
+        navigate("/admin-login");
+      }
+    };
+    checkRole();
+  }, [navigate]);
+
+  useEffect(() => {
+    fetchGroupsInfo();
+  }, []);
+
+  const fetchGroupsInfo = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const token = localStorage.getItem("admin-token");
+
+      if (!token) {
+        console.error("No admin token found!");
+        return;
+      }
+
+      const response = await axios.get(
+        "https://think-charge-quiz-app.onrender.com/fetch-groups-info",
+        {
+          headers: {
+            "scee-event-admin-token": token,
+          },
+        }
+      );
+
+      if (response.status === 200 && response.data.success) {
+        setGroups(response.data.groups);
+      } else {
+        setError("Failed to fetch groups info");
+      }
+    } catch (error) {
+      console.error("Error fetching groups info:", error);
+      setError("Failed to fetch groups info");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const formatTime = (dateString) => {
+    if (!dateString) return { time: null, date: null };
+    const dt = new Date(dateString);
+    const utc = dt.getTime() + dt.getTimezoneOffset() * 60000;
+    const ISTTime = new Date(utc + 5.5 * 60 * 60 * 1000);
+    const hours = ISTTime.getHours();
+    const minutes = ISTTime.getMinutes().toString().padStart(2, "0");
+    const ampm = hours >= 12 ? "PM" : "AM";
+    const hours12 = hours % 12 === 0 ? 12 : hours % 12;
+    const day = ISTTime.getDate().toString().padStart(2, "0");
+    const month = (ISTTime.getMonth() + 1).toString().padStart(2, "0");
+    const year = ISTTime.getFullYear();
+    return {
+      time: `${hours12}:${minutes} ${ampm}`,
+      date: `${day}/${month}/${year}`
+    };
+  };
+
+  const handleEditTime = (idx) => {
+    setEditIndex(idx);
+    const group = groups[idx];
+    if (group.startTime) {
+      const dt = new Date(group.startTime);
+      setEditDate(dt.toISOString().slice(0, 10));
+      setEditTime(dt.toTimeString().slice(0,5));
+    } else {
+      setEditDate("");
+      setEditTime("");
+    }
+  };
+
+  const handleCancel = () => {
+    setEditIndex(null);
+    setEditDate("");
+    setEditTime("");
+  };
+
+  const handleSave = async (groupName) => {
+    if (!editDate || !editTime) return;
+    setSaving(true);
+    try {
+      const token = localStorage.getItem("admin-token");
+      if (!token) throw new Error("No admin token found!");
+      const isoString = new Date(`${editDate}T${editTime}:00+05:30`).toISOString();
+      const response = await axios.post(
+        "https://think-charge-quiz-app.onrender.com/edit-start-time",
+        {
+          groupName,
+          startTime: isoString,
+        },
+        {
+          headers: {
+            "scee-event-admin-token": token,
+          },
+        }
+      );
+      if (response.status === 200 && response.data.success) {
+        const updatedGroups = [...groups];
+        updatedGroups[editIndex].startTime = isoString;
+        setGroups(updatedGroups);
+        handleCancel();
+      } else {
+        alert("Failed to update quiz time");
+      }
+    } catch (err) {
+      alert("Failed to update quiz time");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="set-quiz-time-page">
+        <div className="loading-container">
+          <div className="loader"></div>
+          <p>Loading groups...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="set-quiz-time-page">
@@ -21,9 +160,99 @@ const SetQuizTime = () => {
         </button>
       </nav>
 
-      
+      <div className="content-container">
+        <div className="header-section">
+          <h2>Quiz Schedule Management</h2>
+          <p>Manage quiz times for different groups</p>
+        </div>
 
+        {error && (
+          <div className="error-message">
+            <p>{error}</p>
+            <button onClick={fetchGroupsInfo} className="retry-button">
+              Retry
+            </button>
+          </div>
+        )}
 
+        <div className="groups-grid">
+          {groups.map((group, index) => (
+            <div key={index} className="group-card">
+              <div className="group-header">
+                <h3 className="group-name">{group.groupName}</h3>
+                <div className="group-stats">
+                  <div className="stat-item">
+                    <FontAwesomeIcon icon={faUsers} className="stat-icon" />
+                    <span>{group.teamCount} Teams</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="group-time">
+                <div className="time-display">
+                  <FontAwesomeIcon icon={faClock} className="time-icon" />
+                  <div className="time-info">
+                    {editIndex === index ? (
+                      <>
+                        <input
+                          type="date"
+                          value={editDate}
+                          onChange={e => setEditDate(e.target.value)}
+                          className="edit-date-input"
+                        />
+                        <input
+                          type="time"
+                          value={editTime}
+                          onChange={e => setEditTime(e.target.value)}
+                          className="edit-time-input"
+                        />
+                      </>
+                    ) : (
+                      formatTime(group.startTime).time == null ? (
+                        <span className="time-not-set-text">Not set</span>
+                      ) : (
+                        <>
+                          <span className="time-text">
+                            {formatTime(group.startTime).time}
+                          </span>
+                          <span className="date-text">
+                            {formatTime(group.startTime).date}
+                          </span>
+                        </>
+                      )
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="group-actions">
+                {editIndex === index ? (
+                  <>
+                    <button className="cancel-button" onClick={handleCancel} disabled={saving}>Cancel</button>
+                    <button className="save-button" onClick={() => handleSave(group.groupName)} disabled={saving || !editDate || !editTime}>
+                      {saving ? "Saving..." : "Save"}
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    className="edit-button"
+                    onClick={() => handleEditTime(index)}
+                  >
+                    <FontAwesomeIcon icon={faEdit} />
+                    Edit Time
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {groups.length === 0 && !isLoading && !error && (
+          <div className="empty-state">
+            <p>No groups found</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
