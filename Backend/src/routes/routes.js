@@ -54,11 +54,12 @@ router.get('/fetch-groups-info', MasterAdminTokenVerification,FetchGroupsInfo)
 
 
 // Attendance Admin Routes 
+router.post('/fetch-attendance',FetchAllAttendanceDetails)
 router.post('/mark-present',AttendaceAdminTokenVerification,MarkTeamPresent)
 router.get('/fetch-team/:mobile', AttendaceAdminTokenVerification,GetTeamDetails )
 router.delete('/delete-one-attendance/:id',AttendaceAdminTokenVerification, DeleteOneAttendance)
 router.delete('/delete-all-attendance', AttendaceAdminTokenVerification, ResetAttendance)
-router.post('/fetch-attendance', AttendaceAdminTokenVerification,FetchAllAttendanceDetails)
+
 
 export default router;
 

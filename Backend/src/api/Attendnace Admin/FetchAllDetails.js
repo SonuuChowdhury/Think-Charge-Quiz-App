@@ -1,17 +1,52 @@
 import express from 'express';
 import AttendanceDetailsSchema from '../../models/Participants/AttendanceDetails.js';
 import ParticipantsDetails from '../../models/Participants/ParticipantsDetails.js';
+import QuizManagementDetailsSchema from '../../models/Admins/QuizManageMentDetails.js';
+import GetCurrentISTDate from '../../../Demo/GetCurrentISTDate.js';
 
 const FetchAllAttendanceDetails = express.Router();
 FetchAllAttendanceDetails.use(express.json());
 
 FetchAllAttendanceDetails.post('/fetch-attendance', async (req, res) => {
   try {
-    // Fetch all teams and their attendance
+    const { groupName } = req.body;
+    if (!groupName) {
+      return res.status(400).json({ msg: 'Group name is required in the request body.' });
+    }
+
+    // Fetch the latest quiz settings
+    const quizSettings = await QuizManagementDetailsSchema.findOne();
+    if (!quizSettings || !Array.isArray(quizSettings.StartQuizOn)) {
+      return res.status(404).json({ msg: 'Quiz settings or group start times not found.' });
+    }
+
+    // Find the start time for the requested group
+    const groupInfo = quizSettings.StartQuizOn.find(g => g.groupName === groupName);
+    if (!groupInfo || !groupInfo.startTime) {
+      return res.status(404).json({ msg: `Start time for group '${groupName}' not found.` });
+    }
+
+    // Get current IST time
+    const nowIST = GetCurrentISTDate();
+    const startTime = new Date(groupInfo.startTime);
+    const windowStart = new Date(startTime.getTime() - 30 * 60 * 1000); // 30 min before
+    const windowEnd = new Date(startTime.getTime() + 15 * 60 * 1000); // 15 min after
+
+    if (nowIST < windowStart || nowIST > windowEnd) {
+      return res.status(403).json({
+        msg: `Attendance for group '${groupName}' can only be fetched between ${windowStart.toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })} and ${windowEnd.toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}. Current time: ${nowIST.toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}`
+      });
+    }
+
+    // Fetch all teams in the group and their attendance
     const [allTeams, allAttendance] = await Promise.all([
-      ParticipantsDetails.find().lean(),
+      ParticipantsDetails.find({ groupName }).lean(),
       AttendanceDetailsSchema.find().lean()
     ]);
+
+    if (!allTeams.length) {
+      return res.status(404).json({ msg: `No teams found for group '${groupName}'.` });
+    }
 
     // Create a map for quick attendance lookup
     const attendanceMap = new Map(
@@ -27,26 +62,23 @@ FetchAllAttendanceDetails.post('/fetch-attendance', async (req, res) => {
       let status = 'Absent'; 
       let presentMembers = [];
       let absentMembers = [...teamMembers];
-      let isPresent = false; // Initialize isPresent as false
-      let enteredOn = null; // Default value for EnteredOn
-      let SetAssigned=null;
+      let isPresent = false;
+      let enteredOn = null;
+      let SetAssigned = null;
 
       if (attendanceEntry) {
-        isPresent = true; // Mark as present if attendance entry exists
+        isPresent = true;
         status = attendanceEntry.isAllPresent ? 'All Present' : 'Partial Present';
-        enteredOn = attendanceEntry.EnteredOn; // Extract EnteredOn field
+        enteredOn = attendanceEntry.EnteredOn;
         SetAssigned = attendanceEntry.setAssigned;
 
         if (attendanceEntry.isAllPresent) {
           presentMembers = [...teamMembers];
           absentMembers = [];
         } else {
-          // Find present members by name match
           presentMembers = teamMembers.filter(member => 
             attendanceEntry.PresentMembers.some(p => p.name === member.name)
           );
-
-          // Find absent members
           absentMembers = teamMembers.filter(member => 
             !presentMembers.some(p => p.name === member.name)
           );
@@ -57,8 +89,8 @@ FetchAllAttendanceDetails.post('/fetch-attendance', async (req, res) => {
         teamName: team.teamName,
         mobile: team.mobile,
         status,
-        isPresent, // Add the isPresent field
-        enteredOn, // Include EnteredOn field in the response
+        isPresent,
+        enteredOn,
         SetAssigned,
         presentCount: presentMembers.length,
         absentCount: absentMembers.length,
@@ -82,7 +114,7 @@ FetchAllAttendanceDetails.post('/fetch-attendance', async (req, res) => {
 
   } catch (error) {
     return res.status(500).json({ 
-      msg: "Server Error", 
+      msg: 'Server Error', 
       error: error.message
     });
   }
