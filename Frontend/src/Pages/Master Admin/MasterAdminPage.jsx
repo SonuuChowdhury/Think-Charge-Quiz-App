@@ -299,7 +299,7 @@ export default function MasterAdminPage() {
           <button className="SideControlBarMainControlOptions" onClick={() => {setIsViewingQuizStartingTime(true)
               setisSideControlBarOpen(false)
             }} >
-            <FontAwesomeIcon icon={faClock} />
+            <FontAwesomeIcon icon={faEye} />
             View Quiz Time
           </button>
           <button className="SideControlBarMainControlOptions" onClick={() => {
@@ -628,12 +628,12 @@ export default function MasterAdminPage() {
 
 
   const ViewQuizStartingTimeHandeller = () => {
-    const [quizTime, setQuizTime] = useState(null);
+    const [quizTimes, setQuizTimes] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-      const fetchQuizTime = async () => {
+      const fetchQuizTimes = async () => {
         try {
           setIsLoading(true);
           setError(null);
@@ -653,10 +653,13 @@ export default function MasterAdminPage() {
           );
 
           if (response.status === 200) {
-            console.log(response.data.StartQuizOn);
-            setQuizTime(response.data.StartQuizOn);
+            console.log(response)
+            // Expecting response.data to be an array of group times
+            setQuizTimes(Array.isArray(response.data.StartQuizOn
+            ) ? response.data.StartQuizOn
+            : []);
           } else {
-            throw new Error(response.data.msg || 'Failed to fetch quiz time');
+            throw new Error(response.data.msg || 'Failed to fetch quiz times');
           }
         } catch (err) {
           setError(err.message);
@@ -665,29 +668,21 @@ export default function MasterAdminPage() {
         }
       };
 
-      fetchQuizTime();
+      fetchQuizTimes();
     }, []);
 
     const formatTime = (dateString) => {
       if (!dateString) return '';
-      
-      // Parse the ISO date string
       const date = new Date(dateString);
-      
-      // Get hours and minutes directly from the date
       const hours = date.getUTCHours();
       const minutes = String(date.getUTCMinutes()).padStart(2, '0');
       const ampm = hours >= 12 ? 'PM' : 'AM';
       const hours12 = hours % 12 === 0 ? 12 : hours % 12;
-      
       const day = String(date.getUTCDate()).padStart(2, '0');
       const month = String(date.getUTCMonth() + 1).padStart(2, '0');
       const year = date.getUTCFullYear();
-
       return `${hours12}:${minutes} ${ampm}, ${day}/${month}/${year}`;
     };
-
-    
 
     return (
       <div 
@@ -698,18 +693,23 @@ export default function MasterAdminPage() {
           className="ViewActionHandellerBox quiz-time-box"
           onClick={(e) => e.stopPropagation()}
         >
-          <h2 className="quiz-time-title">Quiz Starting Time</h2>
-          
+          <h2 className="quiz-time-title">Quiz Starting Times</h2>
           {isLoading ? (
             <div className="quiz-time-loading">Loading...</div>
           ) : error ? (
             <div className="quiz-time-error">{error}</div>
-          ) : quizTime ? (
-            <div className="quiz-time-value">{formatTime(quizTime)}</div>
+          ) : quizTimes.length > 0 ? (
+            <div className="quiz-time-list">
+              {quizTimes.map((item) => (
+                <div key={item._id || item.groupName} className="quiz-time-group-row">
+                  <span className="quiz-time-group-name">Group {item.groupName}:</span>
+                  <span className="quiz-time-group-time">{formatTime(item.startTime)}</span>
+                </div>
+              ))}
+            </div>
           ) : (
-            <div className="quiz-time-not-set">No quiz time set</div>
+            <div className="quiz-time-not-set">No quiz times set</div>
           )}
-
           <div className="quiz-time-actions">
             <button 
               className="close-button"

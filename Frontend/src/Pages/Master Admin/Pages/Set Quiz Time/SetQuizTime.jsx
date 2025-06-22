@@ -63,21 +63,12 @@ const SetQuizTime = () => {
     }
   };
 
-  const formatTime = (dateString) => {
-    if (!dateString) return { time: null, date: null };
-    const dt = new Date(dateString);
-    const utc = dt.getTime() + dt.getTimezoneOffset() * 60000;
-    const ISTTime = new Date(utc + 5.5 * 60 * 60 * 1000);
-    const hours = ISTTime.getHours();
-    const minutes = ISTTime.getMinutes().toString().padStart(2, "0");
-    const ampm = hours >= 12 ? "PM" : "AM";
-    const hours12 = hours % 12 === 0 ? 12 : hours % 12;
-    const day = ISTTime.getDate().toString().padStart(2, "0");
-    const month = (ISTTime.getMonth() + 1).toString().padStart(2, "0");
-    const year = ISTTime.getFullYear();
+  const formatTime = (dateTimeString) => {
+    if (!dateTimeString) return { time: null, date: null };
+    const [date, time] = dateTimeString.split("T");
     return {
-      time: `${hours12}:${minutes} ${ampm}`,
-      date: `${day}/${month}/${year}`
+      time: time ? time.slice(0, 5) : null, // "14:30"
+      date: date ? date.split("-").reverse().join("/") : null // "10/06/2024"
     };
   };
 
@@ -85,9 +76,10 @@ const SetQuizTime = () => {
     setEditIndex(idx);
     const group = groups[idx];
     if (group.startTime) {
-      const dt = new Date(group.startTime);
-      setEditDate(dt.toISOString().slice(0, 10));
-      setEditTime(dt.toTimeString().slice(0,5));
+      // Set the date and time exactly as they come (no conversion)
+      const [datePart, timePart] = group.startTime.split("T");
+      setEditDate(datePart || "");
+      setEditTime(timePart ? timePart.slice(0,5) : "");
     } else {
       setEditDate("");
       setEditTime("");
@@ -106,7 +98,7 @@ const SetQuizTime = () => {
     try {
       const token = localStorage.getItem("admin-token");
       if (!token) throw new Error("No admin token found!");
-      const isoString = new Date(`${editDate}T${editTime}:00+05:30`).toISOString();
+      const isoString = `${editDate}T${editTime}`; // Store as local ISO string
       const response = await axios.post(
         "https://think-charge-quiz-app.onrender.com/edit-start-time",
         {

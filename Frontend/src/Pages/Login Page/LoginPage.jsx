@@ -103,7 +103,7 @@ export default function LoginPage() {
             aria-describedby={errors.mobile && "mobile-error"}
           />
           {errors.mobile && (
-            <span id="mobile-error" className="error-message">
+            <span id="mobile-error" className="ad-error-message">
               {errors.mobile}
             </span>
           )}
@@ -131,7 +131,7 @@ export default function LoginPage() {
             </button>
           </div>
           {errors.password && (
-            <span id="password-error" className="error-message">
+            <span id="password-error" className="ad-error-message">
               {errors.password}
             </span>
           )}
