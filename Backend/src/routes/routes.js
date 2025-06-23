@@ -18,7 +18,7 @@ import DeleteAllTeams from "../api/Master Admin/DeleteAllTeams.js";
 import GetQuizStartingTime from "../api/Master Admin/GetQuizeTime.js";
 import BanTeam from "../api/Master Admin/BanTeam.js";
 import FetchGroupsInfo from "../api/Master Admin/FetchGroupsInfo.js";
-
+import FetchAllGroupsInfo from "../api/Attendnace Admin/FetchAllGroupsInfo.js";
 
 // Attendnace Admin Task 
 import MarkTeamPresent from "../api/Attendnace Admin/MarkPresent.js";
@@ -26,6 +26,7 @@ import DeleteOneAttendance from "../api/Attendnace Admin/DeleteOneAttendance.js"
 import ResetAttendance from "../api/Attendnace Admin/ResetAttendance.js";
 import GetTeamDetails from "../api/Attendnace Admin/GetTeamDetials.js";
 import FetchAllAttendanceDetails from "../api/Attendnace Admin/FetchAllDetails.js";
+
 
 // Participants Task 
 import VerifyLockOpenKey from "../api/Participants/Security/LockOpenKeyVerifcation.js";
@@ -50,15 +51,17 @@ router.get('/fetch-teams',MasterAdminTokenVerification,FetchTeams)
 router.post('/edit-start-time', MasterAdminTokenVerification, EditQuizStartingTime)
 router.get('/get-start-time',MasterAdminTokenVerification, GetQuizStartingTime)
 router.post('/ban-team/:mobile', MasterAdminTokenVerification, BanTeam)
-router.get('/fetch-groups-info', MasterAdminTokenVerification,FetchGroupsInfo)
+router.get('/fetch-groups-info', AttendaceAdminTokenVerification,FetchGroupsInfo)
 
 
 // Attendance Admin Routes 
 router.post('/fetch-attendance',AttendaceAdminTokenVerification,FetchAllAttendanceDetails)
+router.get('/fetch-all-groups-info', AttendaceAdminTokenVerification, FetchAllGroupsInfo)
 router.post('/mark-present',AttendaceAdminTokenVerification,MarkTeamPresent)
 router.get('/fetch-team/:mobile', AttendaceAdminTokenVerification,GetTeamDetails )
 router.delete('/delete-one-attendance/:id',AttendaceAdminTokenVerification, DeleteOneAttendance)
 router.delete('/delete-all-attendance', AttendaceAdminTokenVerification, ResetAttendance)
+router.get('/fetch-all-groups-info', AttendaceAdminTokenVerification, FetchAllGroupsInfo)
 
 
 export default router;

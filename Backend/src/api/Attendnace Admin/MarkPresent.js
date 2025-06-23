@@ -26,6 +26,27 @@ MarkTeamPresent.post('/mark-present', async (req, res) => {
       return res.status(404).json({ msg: "Participant not found" });
     }
 
+    // Fetch quiz settings and group start time
+    const QuizSettingsDetails = await QuizManagementDetailsSchema.findOne();
+    if (!QuizSettingsDetails || !Array.isArray(QuizSettingsDetails.StartQuizOn)) {
+      return res.status(404).json({ msg: 'Quiz settings or group start times not found.' });
+    }
+    // Find the start time for the participant's group
+    const groupInfo = QuizSettingsDetails.StartQuizOn.find(g => g.groupName === participant.groupName);
+    if (!groupInfo || !groupInfo.startTime) {
+      return res.status(404).json({ msg: `Start time for group '${participant.groupName}' not found.` });
+    }
+    // Get current IST time
+    const nowIST = new Date(await GetCurrentIST());
+    const startTime = new Date(groupInfo.startTime);
+    const windowStart = new Date(startTime.getTime() - 30 * 60 * 1000); // 30 min before
+    const windowEnd = new Date(startTime.getTime() + 15 * 60 * 1000); // 15 min after
+    if (nowIST < windowStart || nowIST > windowEnd) {
+      return res.status(403).json({
+        msg: `Attendance for group '${participant.groupName}' can only be marked between ${windowStart.toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })} and ${windowEnd.toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}. Current time: ${nowIST.toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}`
+      });
+    }
+
     const existingAttendance = await AttendanceDetailsSchema.findOne({
       mobile: mobileNumber,
       teamName: teamNameString,
@@ -63,7 +84,7 @@ MarkTeamPresent.post('/mark-present', async (req, res) => {
       }
     }
 
-    const QuizSettingsDetails = await QuizManagementDetailsSchema.findOne();
+    // Use the already fetched QuizSettingsDetails for set assignment
     const SetToBeAssigned = await GetSetNumber(QuizSettingsDetails.LastSetAssigned);
 
     QuizSettingsDetails.LastSetAssigned = SetToBeAssigned;
