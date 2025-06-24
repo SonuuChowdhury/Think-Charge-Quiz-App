@@ -35,7 +35,7 @@ GetPartcipantsCredentials.post('/login/participant', async (req, res) => {
             // Update LastLogin time
             participant.LastLogin = await GetCureentIST();
             await participant.save();
-            const token = await jwt.sign({_id:participant._id, mobile:participant.mobile},process.env.JWT_SECRET,{expiresIn:'2h'})
+            const token = await jwt.sign({_id:participant._id, mobile:participant.mobile, role:"participant"},process.env.JWT_SECRET,{expiresIn:'2h'})
             // Exclude password and LastLogin from response
             const { password: _, LastLogin: __, ...participantData } = participant.toObject();
             let isAttendanceMarked;

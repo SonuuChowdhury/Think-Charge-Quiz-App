@@ -1,24 +1,20 @@
-import ParticipantsDetails from '../../models/Participants/ParticipantsDetails.js';
-import AttendanceDetailsSchema from '../../models/Participants/AttendanceDetails.js';
+import ParticipantsDetails from '../../../models/Participants/ParticipantsDetails.js';
+import AttendanceDetailsSchema from '../../../models/Participants/AttendanceDetails.js';
 import express from 'express';
-
-dotenv.config()
 
 const GetAttendanceStatus = express.Router();
 GetAttendanceStatus.use(express.json());
 
 GetAttendanceStatus.post('/get-attendance-status', async (req, res) => {
-    const {mobile} = req.body;
-    if (!mobile) {
-        return res.status(400).json({msg:"mobile is required"});
-    }
+    const user = req.user()
+
     try {
-        const participant = await ParticipantsDetails.findOne({ mobile: Number(mobile) });
+        const participant = await ParticipantsDetails.findOne({ mobile: Number(user._id) });
         if (!participant) {
             return res.status(404).json({ msg: "Participant not found" });
         }
 
-        const attendance = await AttendanceDetailsSchema.findOne({ mobile: Number(mobile) });
+        const attendance = await AttendanceDetailsSchema.findOne({ mobile: Number(user.mobile) });
 
         if (!attendance) {
             return res.status(200).json({ 

@@ -5,6 +5,7 @@ import getAdminCredentials from "../api/Login/AdminLogin.js";
 // Middlewares 
 import MasterAdminTokenVerification from "../middlewares/MasterAdminTokenVerification.js";
 import AttendaceAdminTokenVerification from "../middlewares/AttendanceAdminTokenVerify.js";
+import ParticipantTokenVerification from "../middlewares/ParticipantTokenVerify.js";
 
 // Master Admin Tasks
 import AddParticipant from "../api/Master Admin/AddParticipants.js";
@@ -29,6 +30,7 @@ import FetchAllAttendanceDetails from "../api/Attendnace Admin/FetchAllDetails.j
 // Participants Task 
 import VerifyLockOpenKey from "../api/Participants/Security/LockOpenKeyVerifcation.js";
 import GetPartcipantsCredentials from "../api/Login/PartcipantsLogin.js";
+import GetAttendanceStatus from "../api/Participants/Security/getAttendanceStatus.js";
 
 
 const router = Router();
@@ -36,6 +38,7 @@ const router = Router();
 // Participants Routes
 router.get('/verify-key/:key',VerifyLockOpenKey)
 router.post('/login/participant', GetPartcipantsCredentials)
+router.post('/get-attendance-status',ParticipantTokenVerification, GetAttendanceStatus)
 
 // Admin Login 
 router.post('/login/admin',getAdminCredentials)
