@@ -20,6 +20,7 @@ const ParticipantTokenVerification = async (req,res,next)=>{
             return res.status(403).json({msg:'Unauthorized: Session Expired'})
         }
     }catch(error){
+        cosole.log(error)
         return res.status(403).json({msg:'Unauthorized: Error Occured'})
     }
 }
