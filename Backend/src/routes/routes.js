@@ -51,7 +51,7 @@ router.get('/fetch-teams',MasterAdminTokenVerification,FetchTeams)
 router.post('/edit-start-time', MasterAdminTokenVerification, EditQuizStartingTime)
 router.get('/get-start-time',MasterAdminTokenVerification, GetQuizStartingTime)
 router.post('/ban-team/:mobile', MasterAdminTokenVerification, BanTeam)
-router.get('/fetch-groups-info', AttendaceAdminTokenVerification,FetchGroupsInfo)
+router.get('/fetch-groups-info', MasterAdminTokenVerification,FetchGroupsInfo)
 
 
 // Attendance Admin Routes 
