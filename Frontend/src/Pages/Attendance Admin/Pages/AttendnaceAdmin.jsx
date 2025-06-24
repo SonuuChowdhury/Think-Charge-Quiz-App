@@ -1,15 +1,16 @@
 /* eslint-disable no-unused-vars */
 import './AttendnaceAdmin.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowsRotate, faTrash, faQrcode,faUser } from '@fortawesome/free-solid-svg-icons';
 import QrScanner from 'qr-scanner'
-import Loader from '../../Components/Loader/Loader.jsx'
+import Loader from '../../../Components/Loader/Loader.jsx'
 
 export default function AttendanceAdminPage() {
   const navigate = useNavigate();
+  const { groupName } = useParams();
   const videoRef = useRef(null);
   const scannerRef = useRef(null);
   const [participantDetails, setParticipantDetails] = useState([]);
@@ -20,7 +21,6 @@ export default function AttendanceAdminPage() {
   const [presentMebersList, setPresentMebersList] = useState([])
   const [isViewingTeamList, setIsViewingTeamList] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-
   const [file,setFile]=useState(null)
   const [isScanning, setIsScanning] = useState(false);
   const [scannedData, setScannedData] = useState(null);
@@ -29,6 +29,8 @@ export default function AttendanceAdminPage() {
   const [isAllPresent, setIsAllPresent] = useState(false)
   const [isselectingMemebrLists, setselectingMemebrLists] = useState(false)
   const [Refresh, setRefresh] = useState(false)
+  const [fetchError, setFetchError] = useState(null);
+  const [infoMsg, setInfoMsg] = useState(null);
 
   const startScanner = async () => {
     try {
@@ -206,47 +208,52 @@ export default function AttendanceAdminPage() {
   // Fetch Team Details
   useEffect(() => {
     const fetchTeamDetails = async () => {
+      setFetchError(null);
+      setInfoMsg(null);
       try {
+        if (!groupName) {
+          setFetchError('No group name specified in the URL.');
+          return;
+        }
         setIsLoading(true)
         const token = localStorage.getItem("admin-token");
         if (!token) throw new Error("No admin token found!");
-
         const response = await axios.post(
           "https://think-charge-quiz-app.onrender.com/fetch-attendance",
-          {},
+          { "groupName": groupName },
           { headers: { "scee-event-admin-token": token } }
         );
-        setParticipantDetails(response.data.reports);
+        if (response.status === 200 && response.data.reports) {
+          setParticipantDetails(response.data.reports);
+          if (response.data.reports.length === 0) {
+            setInfoMsg('No teams found for this group.');
+          }
+        } else if (response.status === 200 && response.data.msg) {
+          setInfoMsg(response.data.msg);
+        } else {
+          setFetchError('Unexpected response from server.');
+        }
       } catch (error) {
-        console.error("Error fetching team details:", error);
-      }finally{
+        if (error.response) {
+          // Server responded with a status code outside 2xx
+          if (error.response.status === 403) {
+            setFetchError(error.response.data.msg || 'Attendance window is closed for this group.');
+          } else if (error.response.status === 404) {
+            setFetchError(error.response.data.msg || 'No teams or group not found.');
+          } else {
+            setFetchError(error.response.data.msg || 'Server error occurred.');
+          }
+        } else if (error.request) {
+          setFetchError('No response from server. Please check your connection.');
+        } else {
+          setFetchError(error.message || 'An unknown error occurred.');
+        }
+      } finally {
         setIsLoading(false)
       }
     };
     fetchTeamDetails();
-  }, []);
-
-  useEffect(() => {
-    const fetchTeamDetails = async () => {
-      try {
-        setIsLoading(true)
-        const token = localStorage.getItem("admin-token");
-        if (!token) throw new Error("No admin token found!");
-
-        const response = await axios.post(
-          "https://think-charge-quiz-app.onrender.com/fetch-attendance",
-          {},
-          { headers: { "scee-event-admin-token": token } }
-        );
-        setParticipantDetails(response.data.reports);
-      } catch (error) {
-        console.error("Error fetching team details:", error);
-      }finally{
-        setIsLoading(false)
-      }
-    };
-    fetchTeamDetails();
-  }, [Refresh]);
+  }, [Refresh, groupName]);
 
   const DeleteAttendance = async(mobile)=>{
     try {
@@ -384,132 +391,147 @@ const SelctingMemebrsList = ()=>{
         </button>
       </nav>
 
-      <div className="ControlSectionAttendanceAdmin">
-        <div className="ControlSectionAttendanceAdminLeft">
-          <button className="RefreshButton" onClick={() => setRefresh((val)=>!val)}>
-            Refresh <FontAwesomeIcon icon={faArrowsRotate} />
-          </button>
-          <button className='ResetButton' onClick={ResetAttendance}>
-            Reset <FontAwesomeIcon icon={faTrash} />
-          </button>
+      {fetchError && (
+        <div style={{ color: 'red', padding: '1rem', textAlign: 'center', fontWeight: 'bold', background: '#ffeaea', border: '1px solid #ffb3b3', borderRadius: '8px', margin: '1rem auto', maxWidth: '600px' }}>
+          {fetchError}
         </div>
-        <button className='ScanQRButton' onClick={() => {
-          setIsScanning((val)=>!val)
-          setFetchedDataAfterQR({})}}>
-        {isScanning ? "Cancel" : <span>Scan <FontAwesomeIcon icon={faQrcode} /></span>}
-        </button>
-      </div>
+      )}
 
-      {isScanning ? (
-        <div className="ScannerArea">
-          <div className="ScanerAreaImageArea">
-            <video ref={videoRef} className="ScannerVideo" />
+      {/* Show group name if available and no fetch error */}
+      {!fetchError && groupName && (
+        <div style={{ textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold', margin: '1.5rem 0 1rem 0', letterSpacing: '1px', color: '#2d3748' }}>
+          Group: {groupName}
+        </div>
+      )}
+
+      {!fetchError && (
+        <>
+          <div className="ControlSectionAttendanceAdmin">
+            <div className="ControlSectionAttendanceAdminLeft">
+              <button className="RefreshButton" onClick={() => setRefresh((val)=>!val)}>
+                Refresh <FontAwesomeIcon icon={faArrowsRotate} />
+              </button>
+              <button className='ResetButton' onClick={ResetAttendance}>
+                Reset <FontAwesomeIcon icon={faTrash} />
+              </button>
+            </div>
+            <button className='ScanQRButton' onClick={() => {
+              setIsScanning((val)=>!val)
+              setFetchedDataAfterQR({})}}>
+              {isScanning ? "Cancel" : <span>Scan <FontAwesomeIcon icon={faQrcode} /></span>}
+            </button>
           </div>
-          <div className="ScannerControl">
-            <span className="ScannerControlMobile">
-              {scannedData}
+
+          {isScanning ? (
+            <div className="ScannerArea">
+              <div className="ScanerAreaImageArea">
+                <video ref={videoRef} className="ScannerVideo" />
+              </div>
+              <div className="ScannerControl">
+                <span className="ScannerControlMobile">
+                  {scannedData}
+                </span>
+                <span>{fetchedDataAfterQR.teamName}</span>
+              </div>
+            </div>
+          ) : null}
+
+          <div className="PresentTeamsSectionArea">
+            <span className="PresntTeamSectionHeader">
+              Present Teams
             </span>
-            <span>{fetchedDataAfterQR.teamName}</span>
+            {PresentTeams.length==0? <span>No Teams Found</span>: <div className="PresentTeamsListSection">
+              {PresentTeams.map((data,index)=>(
+                <div className="PresentTeamItem" key={index}>
+                  <div className="PresentTeamItemLeftPart">
+                    <span className={`PresentTeamItemLeftPartStatus ${data.status=="Partial Present"? "MarkStatusOrange":"MarkStatusGreen"}`}>
+                        Status: {data.status}
+                    </span>
+                    <span className="PresentTeamItemLeftPartName">
+                      {data.teamName}
+                    </span>
+                    <span className="PresentTeamItemLeftPartMobile">
+                      {data.mobile}
+                    </span>
+                    <span className="PresentTeamItemLeftPartTime">
+                      {formatDate(data.enteredOn)}
+                    </span>
+                    <span className="PresentTeamItemLeftPartSet">
+                      Set Assigned: {data.SetAssigned}
+                    </span>
+                  </div>
+                  <div className="PresentTeamItemRightPart">
+                    <div className="PresentTeamItemRightPartTeamMembersGraphics">
+                      {data.presentMembers.map((presentMembersItem,index)=>(
+                        <FontAwesomeIcon icon={faUser} key={index} className='presentMembersIcon' />
+                      ))}
+                      {data.absentMembers.map((presentMembersItem,index)=>(
+                        <FontAwesomeIcon icon={faUser} key={index} className='AbsentMembersIcon' />
+                      ))}
+                    </div>
+                    <div className="PresentTeamItemRightPartButtonSection">
+                      <button className="ViewAllButton" onClick={()=>{
+                        setIsViewingTeamList(true)
+                        setViewListTeamName(data.teamName)
+                        setAbsentMembersList(data.absentMembers)
+                        setPresentMebersList(data.presentMembers)
+                        }}>
+                        View Team
+                      </button>
+                      <button className="DeleteAttendanceForTeamButton" onClick={()=>DeleteAttendance(data.mobile)} >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div> }
           </div>
-        </div>
-      ) : null}
 
-      <div className="PresentTeamsSectionArea">
-        <span className="PresntTeamSectionHeader">
-          Present Teams
-        </span>
-        {PresentTeams.length==0? <span>No Teams Found</span>: <div className="PresentTeamsListSection">
-          {PresentTeams.map((data,index)=>(
-            <div className="PresentTeamItem" key={index}>
-              <div className="PresentTeamItemLeftPart">
-                <span className={`PresentTeamItemLeftPartStatus ${data.status=="Partial Present"? "MarkStatusOrange":"MarkStatusGreen"}`}>
-                    Status: {data.status}
-                </span>
-                <span className="PresentTeamItemLeftPartName">
-                  {data.teamName}
-                </span>
-                <span className="PresentTeamItemLeftPartMobile">
-                  {data.mobile}
-                </span>
-                <span className="PresentTeamItemLeftPartTime">
-                  {formatDate(data.enteredOn)}
-                </span>
-                <span className="PresentTeamItemLeftPartSet">
-                  Set Assigned: {data.SetAssigned}
-                </span>
-              </div>
-              <div className="PresentTeamItemRightPart">
-                <div className="PresentTeamItemRightPartTeamMembersGraphics">
-                  {data.presentMembers.map((presentMembersItem,index)=>(
-                    <FontAwesomeIcon icon={faUser} key={index} className='presentMembersIcon' />
-                  ))}
-                  {data.absentMembers.map((presentMembersItem,index)=>(
-                    <FontAwesomeIcon icon={faUser} key={index} className='AbsentMembersIcon' />
-                  ))}
+          <div className="PresentTeamsSectionArea">
+            <span className="PresntTeamSectionHeader">
+              Absent Teams
+            </span>
+            {AbsentTeams.length==0? <span>No Teams Found</span>: <div className="PresentTeamsListSection">
+              {AbsentTeams.map((data,index)=>(
+                <div className="PresentTeamItem" key={index}>
+                  <div className="PresentTeamItemLeftPart">
+                    <span className="PresentTeamItemLeftPartStatus MarkStatusRed">
+                        Status: {data.status}
+                    </span>
+                    <span className="PresentTeamItemLeftPartName">
+                      {data.teamName}
+                    </span>
+                    <span className="PresentTeamItemLeftPartMobile">
+                      {data.mobile}
+                    </span>
+                  </div>
+                  <div className="PresentTeamItemRightPart">
+                    <div className="PresentTeamItemRightPartTeamMembersGraphics">
+                      {data.presentMembers.map((presentMembersItem,index)=>(
+                        <FontAwesomeIcon icon={faUser} key={index} className='presentMembersIcon' />
+                      ))}
+                      {data.absentMembers.map((presentMembersItem,index)=>(
+                        <FontAwesomeIcon icon={faUser} key={index} className='AbsentMembersIcon' />
+                      ))}
+                    </div>
+                    <div className="PresentTeamItemRightPartButtonSection">
+                      <button className="ViewAllButton" onClick={()=>{
+                        setIsViewingTeamList(true)
+                        setViewListTeamName(data.teamName)
+                        setPresentMebersList(data.presentMembers)
+                        setAbsentMembersList(data.absentMembers)
+                      }}>
+                        View Team
+                      </button>
+                    </div>
+                  </div>
                 </div>
-                <div className="PresentTeamItemRightPartButtonSection">
-                  <button className="ViewAllButton" onClick={()=>{
-                    setIsViewingTeamList(true)
-                    setViewListTeamName(data.teamName)
-                    setAbsentMembersList(data.absentMembers)
-                    setPresentMebersList(data.presentMembers)
-                    }}>
-                    View Team
-                  </button>
-                  <button className="DeleteAttendanceForTeamButton" onClick={()=>DeleteAttendance(data.mobile)} >
-                    Delete
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div> }
-      </div>
-
-
-      <div className="PresentTeamsSectionArea">
-        <span className="PresntTeamSectionHeader">
-          Absent Teams
-        </span>
-        {AbsentTeams.length==0? <span>No Teams Found</span>: <div className="PresentTeamsListSection">
-          {AbsentTeams.map((data,index)=>(
-            <div className="PresentTeamItem" key={index}>
-              <div className="PresentTeamItemLeftPart">
-                <span className="PresentTeamItemLeftPartStatus MarkStatusRed">
-                    Status: {data.status}
-                </span>
-                <span className="PresentTeamItemLeftPartName">
-                  {data.teamName}
-                </span>
-                <span className="PresentTeamItemLeftPartMobile">
-                  {data.mobile}
-                </span>
-              </div>
-              <div className="PresentTeamItemRightPart">
-                <div className="PresentTeamItemRightPartTeamMembersGraphics">
-                  {data.presentMembers.map((presentMembersItem,index)=>(
-                    <FontAwesomeIcon icon={faUser} key={index} className='presentMembersIcon' />
-                  ))}
-                  {data.absentMembers.map((presentMembersItem,index)=>(
-                    <FontAwesomeIcon icon={faUser} key={index} className='AbsentMembersIcon' />
-                  ))}
-                </div>
-                <div className="PresentTeamItemRightPartButtonSection">
-                  <button className="ViewAllButton" onClick={()=>{
-                  setIsViewingTeamList(true)
-                  setViewListTeamName(data.teamName)
-                  setPresentMebersList(data.presentMembers)
-                  setAbsentMembersList(data.absentMembers)
-                }}>
-                    View Team
-                  </button>
-          
-                </div>
-              </div>
-            </div>
-          ))}
-        </div> }
-        </div>
+              ))}
+            </div> }
+          </div>
+        </>
+      )}
 
     </>
   );

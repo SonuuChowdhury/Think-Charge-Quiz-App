@@ -1,0 +1,65 @@
+.attendance-group-list {
+  max-width: 500px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  padding: 2rem 1.5rem;
+}
+
+.attendance-group-list h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.6rem;
+  color: #22223b;
+}
+
+.attendance-group-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.attendance-group-list li {
+  background: #f7fafc;
+  border-radius: 8px;
+  margin-bottom: 1.2rem;
+  padding: 1.1rem 1.2rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  transition: box-shadow 0.2s;
+}
+
+.attendance-group-list li:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+}
+
+.attendance-group-list strong {
+  font-size: 1.15rem;
+  color: #2d3748;
+}
+
+.attendance-group-list .open {
+  color: #059669;
+  font-weight: bold;
+}
+
+.attendance-group-list .closed {
+  color: #a0aec0;
+  font-weight: bold;
+}
+
+.attendance-group-list .start-time {
+  color: #4a5568;
+  font-size: 0.98rem;
+  margin-top: 0.2rem;
+  display: block;
+}
+
+@media (max-width: 600px) {
+  .attendance-group-list {
+    padding: 1rem 0.5rem;
+  }
+  .attendance-group-list li {
+    padding: 0.8rem 0.7rem;
+  }
+}
+
