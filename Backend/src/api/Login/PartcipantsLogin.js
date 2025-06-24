@@ -5,6 +5,7 @@ import jwt from  'jsonwebtoken'
 import dotenv from 'dotenv'
 import bcrypt from 'bcrypt'
 import GetCureentIST from '../../../Demo/GetCurrentIST.js';
+import QuizManagementDetailsSchema from '../../models/Admins/QuizManageMentDetails.js';
 
 dotenv.config()
 
@@ -46,7 +47,19 @@ GetPartcipantsCredentials.post('/login/participant', async (req, res) => {
 
             isAttendanceMarked = !!attendance;
 
-            return res.status(200).json({ token, participant: participantData, "isAttendanceMarked": isAttendanceMarked });
+            // Fetch group start time
+            let groupStartTime = null;
+            if (participant.groupName) {
+                const quizDetails = await QuizManagementDetailsSchema.findOne({});
+                if (quizDetails && Array.isArray(quizDetails.StartQuizOn)) {
+                    const groupInfo = quizDetails.StartQuizOn.find(item => item.groupName === participant.groupName);
+                    if (groupInfo) {
+                        groupStartTime = groupInfo.startTime;
+                    }
+                }
+            }
+
+            return res.status(200).json({ token, participant: participantData, isAttendanceMarked, groupStartTime });
         } catch (error) {
             return res.status(500).json({msg:`error while login: ${error}`})
         }
