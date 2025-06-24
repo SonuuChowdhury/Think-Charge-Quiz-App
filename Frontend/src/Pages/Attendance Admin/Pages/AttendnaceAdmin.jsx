@@ -279,7 +279,7 @@ export default function AttendanceAdminPage() {
     }
   }
 
-  const ResetAttendance = async(mobile)=>{
+  const ResetAttendance = async()=>{
     try {
       setIsLoading(true)
       const token = localStorage.getItem("admin-token");
@@ -288,6 +288,7 @@ export default function AttendanceAdminPage() {
       const response = await axios.delete(
         `https://think-charge-quiz-app.onrender.com/delete-all-attendance`,
         {
+          data: { "groupName": groupName },
           headers: { "scee-event-admin-token": token }
         }
       );      
@@ -385,7 +386,7 @@ const SelctingMemebrsList = ()=>{
           <h1>Attendance Dashboard</h1>
           <small>Admin Portal</small>
         </div>
-        <button className="logout-button" onClick={() => navigate('/attendance-admin-group-list')}>
+        <button className="logout-button" onClick={() => navigate('/attendance-admin')}>
           Dashboard
         </button>
       </nav>
