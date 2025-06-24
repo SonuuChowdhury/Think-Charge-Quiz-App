@@ -2,8 +2,6 @@ import { Router } from "express";
 
 import getAdminCredentials from "../api/Login/AdminLogin.js";
 
-
-
 // Middlewares 
 import MasterAdminTokenVerification from "../middlewares/MasterAdminTokenVerification.js";
 import AttendaceAdminTokenVerification from "../middlewares/AttendanceAdminTokenVerify.js";

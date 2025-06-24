@@ -1,4 +1,5 @@
 import ParticipantsDetails from '../../models/Participants/ParticipantsDetails.js';
+import AttendanceDetailsSchema from '../../models/Participants/AttendanceDetails.js';
 import express from 'express';
 import jwt from  'jsonwebtoken'
 import dotenv from 'dotenv'
@@ -37,8 +38,15 @@ GetPartcipantsCredentials.post('/login/participant', async (req, res) => {
             const token = await jwt.sign({_id:participant._id, mobile:participant.mobile},process.env.JWT_SECRET,{expiresIn:'2h'})
             // Exclude password and LastLogin from response
             const { password: _, LastLogin: __, ...participantData } = participant.toObject();
+            let isAttendanceMarked;
+            // Check if attendance is marked for this participant's team (by mobile)
+            const attendance = await AttendanceDetailsSchema.findOne({
+                mobile: participant.mobile
+            });
 
-            return res.status(200).json({ token, participant: participantData });
+            isAttendanceMarked = !!attendance;
+
+            return res.status(200).json({ token, participant: participantData, "isAttendanceMarked": isAttendanceMarked });
         } catch (error) {
             return res.status(500).json({msg:`error while login: ${error}`})
         }
