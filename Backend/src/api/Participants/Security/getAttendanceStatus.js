@@ -7,7 +7,7 @@ const GetAttendanceStatus = express.Router();
 GetAttendanceStatus.use(express.json());
 
 GetAttendanceStatus.post('/get-attendance-status', async (req, res) => {
-    const user = req.user()
+    const user = req.user
 
     try {
         const participant = await ParticipantsDetails.findById(user._id);
