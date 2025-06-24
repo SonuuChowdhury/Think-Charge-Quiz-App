@@ -4,7 +4,7 @@ import jwt, { decode } from 'jsonwebtoken'
 dotenv.config()
 
 const ParticipantTokenVerification = async (req,res,next)=>{
-    const token = req.headers['scee-event-admin-token'];
+    const token = req.headers['participant-token'];
     if (!token) return res.status(403).json({ msg: 'Token Not Found' });
 
     try{
