@@ -376,7 +376,6 @@ const SelctingMemebrsList = ()=>{
   </div>
 }
 
-
   return (
     <>{isLoading && <Loader/>}
       {isViewingTeamList && <TeamViewList/>}
@@ -386,8 +385,8 @@ const SelctingMemebrsList = ()=>{
           <h1>Attendance Dashboard</h1>
           <small>Admin Portal</small>
         </div>
-        <button className="logout-button" onClick={() => navigate('/admin-login')}>
-          Log Out
+        <button className="logout-button" onClick={() => navigate('/attendance-admin-group-list')}>
+          Dashboard
         </button>
       </nav>
 

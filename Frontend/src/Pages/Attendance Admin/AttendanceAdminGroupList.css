@@ -1,9 +1,13 @@
 .attendance-group-list {
   max-width: 500px;
+  margin: 2rem auto;
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.08);
   padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .attendance-group-list h2 {
@@ -17,6 +21,7 @@
   list-style: none;
   padding: 0;
   margin: 0;
+  width: 100%;
 }
 
 .attendance-group-list li {
@@ -26,6 +31,7 @@
   padding: 1.1rem 1.2rem;
   box-shadow: 0 1px 4px rgba(0,0,0,0.04);
   transition: box-shadow 0.2s;
+  width: 100%;
 }
 
 .attendance-group-list li:hover {
@@ -57,6 +63,7 @@
 @media (max-width: 600px) {
   .attendance-group-list {
     padding: 1rem 0.5rem;
+    max-width: 98vw;
   }
   .attendance-group-list li {
     padding: 0.8rem 0.7rem;

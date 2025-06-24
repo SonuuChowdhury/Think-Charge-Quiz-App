@@ -35,11 +35,8 @@ function App() {
         {/* Attendance Admin Page Routes*/}
         <Route path="/attendance-admin" element={<AttendanceAdminGroupList/>} />
         <Route path="/attendance-admin/:groupName" element={<AttendanceAdminPage/>} />
-
-        
       </Routes>
     </Router>
-
     </>
   )
 }
