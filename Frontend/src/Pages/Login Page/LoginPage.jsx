@@ -32,6 +32,10 @@ export default function LoginPage() {
     }
   };
 
+  useEffect(() => {
+    localStorage.clear()
+  }, []);
+
   // Real-time validation
   useEffect(() => {
     const newErrors = {};
@@ -60,7 +64,19 @@ export default function LoginPage() {
       })
       if(LoginResponse.status==200){
         await localStorage.setItem("participant-token", LoginResponse.data.token)
-        Navigate("/playgame")
+        // Store additional data from response
+        if(LoginResponse.data.isAttendanceMarked !== undefined) {
+          localStorage.setItem("isAttendanceMarked", LoginResponse.data.isAttendanceMarked.toString())
+        }
+        if(LoginResponse.data.groupStartTime) {
+          localStorage.setItem("groupStartTime", LoginResponse.data.groupStartTime)
+        }
+        if(LoginResponse.data.participant) {
+          localStorage.setItem("participantData", JSON.stringify(LoginResponse.data.participant))
+        }
+        
+        LoginResponse.data.isAttendanceMarked? Navigate('/participant/instructions'): Navigate('/participant/waiting') 
+        
       }else{
         setShowingError(true)
       }

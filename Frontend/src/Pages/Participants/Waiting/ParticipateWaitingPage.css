@@ -1,0 +1,359 @@
+.participant-waiting-root {
+  min-height: 100vh;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  color: #222;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e0e7ff 100%);
+}
+
+.participant-waiting-theme-vibrant {
+  background: linear-gradient(135deg, #f5f7fa 0%, #e0e7ff 60%, #ffe3ec 100%);
+}
+
+.participant-waiting-navbar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 2rem;
+  background: #23235b;
+  /* deep blue for strong contrast */
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  border-bottom: 2px solid #e0e7ff;
+}
+.participant-waiting-navbar-horizontal-mobile {
+  flex-direction: row !important;
+}
+.participant-waiting-navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+.participant-waiting-logo {
+  height: 44px;
+  width: 44px;
+  object-fit: contain;
+  /* removed circle and padding */
+}
+.participant-waiting-title {
+  font-size: 1.45rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(35,35,91,0.18);
+}
+.participant-waiting-logout-btn {
+  background: #fff;
+  color: #23235b;
+  border: 2px solid #23235b;
+  padding: 0.5rem 1.3rem;
+  border-radius: 8px;
+  font-size: 1.08rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(35,35,91,0.10);
+}
+.participant-waiting-logout-btn:hover {
+  background: #23235b;
+  color: #fff;
+  border: 2px solid #fff;
+  box-shadow: 0 4px 16px rgba(35,35,91,0.18);
+}
+
+.participant-waiting-main {
+  display: flex;
+  gap: 2rem;
+  padding: 2rem 5vw;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.participant-waiting-left {
+  flex: 3;
+  background: linear-gradient(120deg, #e0e7ff 60%, #fff 100%);
+  border-radius: 18px;
+  box-shadow: 0 2px 16px rgba(91,108,255,0.07);
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  border: 2px solid #d1d5fa;
+}
+.participant-waiting-team-info {
+  margin-bottom: 1rem;
+}
+.participant-waiting-team-name {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #5b6cff;
+  letter-spacing: 1px;
+}
+.participant-waiting-team-details {
+  font-size: 1.1rem;
+  color: #444;
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.participant-waiting-members-list {
+  margin-top: 1rem;
+}
+.participant-waiting-members-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.7rem;
+  color: #ff758c;
+}
+.participant-waiting-members-grid {
+  display: flex;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+}
+.participant-waiting-member-card {
+  background: linear-gradient(120deg, #fff 60%, #ffe3ec 100%);
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-width: 180px;
+  box-shadow: 0 1px 8px rgba(255,117,140,0.07);
+  border: 1.5px solid #ffd6e3;
+}
+.participant-waiting-member-avatar {
+  background: linear-gradient(135deg, #5b6cff 0%, #ff7eb3 100%);
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 700;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(91,108,255,0.10);
+}
+.participant-waiting-member-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.participant-waiting-member-name {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #5b6cff;
+}
+.participant-waiting-member-role {
+  font-size: 0.95rem;
+  color: #ff758c;
+}
+.participant-waiting-member-meta {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.participant-waiting-right {
+  flex: 1;
+  background: linear-gradient(120deg, #fff 60%, #e0e7ff 100%);
+  border-radius: 18px;
+  box-shadow: 0 2px 16px rgba(255,117,140,0.07);
+  padding: 2rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  min-width: 260px;
+  max-width: 340px;
+  border: 2px solid #ffd6e3;
+}
+.participant-waiting-qr-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7rem;
+}
+.participant-waiting-qr {
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(91,108,255,0.10);
+  background: #fff;
+  padding: 0.5rem;
+}
+.participant-waiting-qr-label {
+  font-size: 1rem;
+  color: #5b6cff;
+  margin-top: 0.3rem;
+  font-weight: 600;
+}
+.participant-waiting-window-info {
+  width: 100%;
+  background: #f7fafc;
+  border-radius: 8px;
+  padding: 0.8rem 1rem;
+  font-size: 1rem;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  align-items: flex-start;
+  border: 1.5px solid #e0e7ff;
+}
+.participant-waiting-window-status {
+  margin-top: 0.5rem;
+  font-weight: 700;
+  padding: 0.2rem 0.7rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  display: inline-block;
+}
+.participant-waiting-window-status-open {
+  background: #e0f7e9;
+  color: #1b7e3c;
+  border: 1.5px solid #1b7e3c33;
+}
+.participant-waiting-window-status-closed {
+  background: #ffeaea;
+  color: #c62828;
+  border: 1.5px solid #c6282833;
+}
+.participant-waiting-instructions {
+  margin-top: 1.2rem;
+  font-size: 1.05rem;
+  color: #fff;
+  background: linear-gradient(90deg, #5b6cff 0%, #ff7eb3 100%);
+  border-radius: 8px;
+  padding: 0.8rem 1rem;
+  text-align: center;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(91,108,255,0.10);
+}
+
+.participant-waiting-counter-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  background: #f7fafc;
+  border-radius: 8px;
+  padding: 0.7rem 1.2rem;
+  box-shadow: 0 1px 6px rgba(91,108,255,0.07);
+  border: 1.5px solid #e0e7ff;
+  flex-wrap: wrap;
+}
+.participant-waiting-counter-label {
+  font-size: 1.08rem;
+  color: #23235b;
+  font-weight: 600;
+}
+.participant-waiting-counter-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #ff758c;
+  letter-spacing: 1px;
+  min-width: 60px;
+  text-align: center;
+}
+.participant-waiting-refresh-btn {
+  background: #23235b;
+  color: #fff;
+  border: 2px solid #23235b;
+  border-radius: 7px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  padding: 0.38rem 1.1rem;
+  margin-left: 0.5rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border 0.2s, box-shadow 0.2s;
+  box-shadow: 0 1px 6px rgba(35,35,91,0.10);
+}
+.participant-waiting-refresh-btn:disabled {
+  background: #e0e7ff;
+  color: #aaa;
+  border: 2px solid #e0e7ff;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+.participant-waiting-refresh-btn:not(:disabled):hover {
+  background: #fff;
+  color: #23235b;
+  border: 2px solid #23235b;
+}
+
+.participant-waiting-error-message {
+  background: #ffeaea;
+  color: #c62828;
+  border: 1.5px solid #c62828;
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+  margin-top: 0.8rem;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+  box-shadow: 0 1px 6px rgba(198,40,40,0.07);
+}
+
+@media (max-width: 900px) {
+  .participant-waiting-main {
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1.2rem 2vw;
+  }
+  .participant-waiting-left, .participant-waiting-right {
+    max-width: 100%;
+    min-width: unset;
+    padding: 1.2rem 0.7rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .participant-waiting-navbar {
+    flex-direction: row !important;
+    padding: 0.6rem 0.7rem;
+  }
+  .participant-waiting-navbar-left {
+    gap: 0.4rem;
+  }
+  .participant-waiting-logo {
+    height: 34px;
+    width: 34px;
+    /* no circle, no padding */
+  }
+  .participant-waiting-title {
+    font-size: 1.08rem;
+  }
+  .participant-waiting-logout-btn {
+    font-size: 0.97rem;
+    padding: 0.35rem 0.8rem;
+  }
+  .participant-waiting-main {
+    padding: 0.5rem 0.5vw;
+  }
+  .participant-waiting-left, .participant-waiting-right {
+    padding: 0.7rem 0.3rem;
+  }
+  .participant-waiting-members-grid {
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+  .participant-waiting-counter-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.6rem 0.7rem;
+  }
+  .participant-waiting-counter-value {
+    font-size: 1.1rem;
+    min-width: 48px;
+  }
+  .participant-waiting-refresh-btn {
+    font-size: 0.97rem;
+    padding: 0.32rem 0.8rem;
+    margin-left: 0;
+  }
+  .participant-waiting-error-message {
+    font-size: 0.95rem;
+    padding: 0.6rem 0.7rem;
+    margin-top: 0.6rem;
+  }
+}
