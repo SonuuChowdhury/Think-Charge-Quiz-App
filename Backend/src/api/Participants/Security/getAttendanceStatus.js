@@ -9,7 +9,7 @@ GetAttendanceStatus.post('/get-attendance-status', async (req, res) => {
     const user = req.user()
 
     try {
-        const participant = await ParticipantsDetails.findOne({ mobile: Number(user._id) });
+        const participant = await ParticipantsDetails.findById(user._id);
         if (!participant) {
             return res.status(404).json({ msg: "Participant not found" });
         }
