@@ -16,6 +16,7 @@ import AttendanceAdminPage from './Pages/Attendance Admin/Pages/AttendnaceAdmin'
 import AttendanceAdminGroupList from './Pages/Attendance Admin/AttendanceAdminGroupList';
 //Participants routes
 import ParticipantWaitingPage from './Pages/Participants/Waiting/ParticipantWaitingPage';
+import ParticipantInstructionPage from './Pages/Participants/Instructions/ParticipantInstructionPage';
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
         <Route path="/attendance-admin/:groupName" element={<AttendanceAdminPage/>} />
         {/* participants pages  */}
         <Route path="/participant/waiting" element={<ParticipantWaitingPage/>} />
+        <Route path="/participant/instructions" element={<ParticipantInstructionPage/>} />
       </Routes>
     </Router>
     </>
