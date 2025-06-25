@@ -1,5 +1,7 @@
 import express from 'express';
 import QuizManagementDetailsSchema from '../../models/Admins/QuizManageMentDetails.js';
+import AttendanceDetailsSchema from '../../models/Participants/AttendanceDetails.js';
+import ParticipantsDetails from '../../models/Participants/ParticipantsDetails.js';
 
 const EditQuizStartingTime = express.Router();
 
@@ -90,34 +92,34 @@ EditQuizStartingTime.post('/edit-start-time', async (req, res) => {
       group => group.groupName === groupName
     );
 
+    let isNewGroup = false;
     if (groupIndex === -1) {
       // Group not found, create a new one
       quizManagement.StartQuizOn.push({
         groupName: groupName,
         startTime: parsedStartTime
       });
-      
-      await quizManagement.save();
-
-      return res.status(201).json({
-        success: true,
-        message: `New group '${groupName}' created with start time`,
-        data: {
-          groupName,
-          startTime: parsedStartTime
-        }
-      });
+      isNewGroup = true;
+    } else {
+      // Update the start time for the existing group
+      quizManagement.StartQuizOn[groupIndex].startTime = parsedStartTime;
     }
-
-    // Update the start time for the existing group
-    quizManagement.StartQuizOn[groupIndex].startTime = parsedStartTime;
-    
     // Save the updated document
     await quizManagement.save();
 
-    return res.status(200).json({
+    // --- RESET ATTENDANCE FOR THIS GROUP ---
+    // 1. Fetch all participants in this group
+    const participants = await ParticipantsDetails.find({ groupName });
+    const participantMobiles = participants.map(p => p.mobile);
+    // 2. Delete attendance entries for these mobiles
+    await AttendanceDetailsSchema.deleteMany({ mobile: { $in: participantMobiles } });
+    // --- END RESET ---
+
+    return res.status(isNewGroup ? 201 : 200).json({
       success: true,
-      message: `Start time updated successfully for group '${groupName}'`,
+      message: isNewGroup
+        ? `New group '${groupName}' created with start time. Attendance reset for all teams in this group.`
+        : `Start time updated successfully for group '${groupName}'. Attendance reset for all teams in this group.`,
       data: {
         groupName,
         startTime: parsedStartTime
