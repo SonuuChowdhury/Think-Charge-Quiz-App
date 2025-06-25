@@ -503,3 +503,84 @@
   border-radius: 8px;
   overflow: hidden;
 }
+
+/* Modern timer style for attendance window */
+.attendance-timer-container {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  background: linear-gradient(90deg, #5b6cff 0%, #ff758c 100%);
+  color: #fff;
+  font-size: 1.15rem;
+  font-weight: 700;
+  border-radius: 8px;
+  padding: 0.5rem 1.3rem;
+  margin-left: 1.5rem;
+  box-shadow: 0 2px 8px rgba(91,108,255,0.10);
+  letter-spacing: 1px;
+  transition: background 0.2s;
+}
+.attendance-timer-label {
+  font-size: 1.05rem;
+  font-weight: 500;
+  opacity: 0.85;
+}
+.attendance-timer-value {
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #fff;
+}
+@media (max-width: 600px) {
+  .attendance-timer-container {
+    font-size: 1rem;
+    padding: 0.4rem 0.7rem;
+    margin-left: 0.5rem;
+  }
+  .attendance-timer-value {
+    font-size: 1.1rem;
+  }
+}
+
+/* Responsive and modern group/timer card */
+.attendance-group-timer-card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 16px rgba(91,108,255,0.10);
+  padding: 1.2rem 2rem;
+  margin: 1.5rem auto 1rem auto;
+  max-width: 600px;
+  min-width: 220px;
+  flex-wrap: wrap;
+  transition: box-shadow 0.2s;
+}
+.attendance-group-name {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #2d3748;
+  letter-spacing: 1px;
+  text-align: center;
+  word-break: break-word;
+}
+@media (max-width: 600px) {
+  .attendance-group-timer-card {
+    flex-direction: column;
+    gap: 0.7rem;
+    padding: 0.8rem 0.5rem;
+    min-width: unset;
+    width: 98vw;
+    box-sizing: border-box;
+  }
+  .attendance-group-name {
+    font-size: 1.1rem;
+  }
+  .attendance-timer-container {
+    margin-left: 0;
+    width: 100%;
+    justify-content: center;
+  }
+}

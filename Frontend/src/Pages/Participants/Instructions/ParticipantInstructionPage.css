@@ -25,9 +25,14 @@
   gap: 0.7rem;
 }
 .participant-instruction-group-logo {
-  height: 44px;
-  width: 44px;
-  object-fit: contain;
+  color: #fff;
+  width: 54px;
+  height: 54px;
+  min-width: 54px;
+  min-height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .participant-instruction-group-info {
   display: flex;

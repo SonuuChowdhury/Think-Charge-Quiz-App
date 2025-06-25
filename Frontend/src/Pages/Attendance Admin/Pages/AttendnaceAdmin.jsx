@@ -31,6 +31,8 @@ export default function AttendanceAdminPage() {
   const [Refresh, setRefresh] = useState(false)
   const [fetchError, setFetchError] = useState(null);
   const [infoMsg, setInfoMsg] = useState(null);
+  const [windowTimeLeft, setWindowTimeLeft] = useState('');
+  const [attendanceWindowEnd, setAttendanceWindowEnd] = useState(null);
 
   const startScanner = async () => {
     try {
@@ -224,6 +226,7 @@ export default function AttendanceAdminPage() {
           { headers: { "scee-event-admin-token": token } }
         );
         if (response.status === 200 && response.data.reports) {
+          setAttendanceWindowEnd(response.data.startTime ? response.data.startTime : null);
           setParticipantDetails(response.data.reports);
           if (response.data.reports.length === 0) {
             setInfoMsg('No teams found for this group.');
@@ -377,6 +380,36 @@ const SelctingMemebrsList = ()=>{
   </div>
 }
 
+  // Timer logic for attendance window (+15 mins)
+  useEffect(() => {
+    if (!attendanceWindowEnd) {
+      setWindowTimeLeft('');
+      return;
+    }
+    // Remove the last 'Z' from the date string if present
+    let endDate = attendanceWindowEnd;
+    if (typeof attendanceWindowEnd === 'string' && attendanceWindowEnd.endsWith('Z')) {
+      endDate = attendanceWindowEnd.slice(0, -1);
+    }
+    const updateCounter = () => {
+      const now = new Date();
+      const end = typeof endDate === 'string' ? new Date(endDate) : endDate;
+      // Add 15 minutes (900,000 ms) to the attendance window end
+      const endPlus15 = new Date(end.getTime() + 15 * 60 * 1000);
+      const diff = endPlus15 - now;
+      if (diff > 0) {
+        const mins = String(Math.floor(diff / 60000)).padStart(2, '0');
+        const secs = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
+        setWindowTimeLeft(`${mins}:${secs}`);
+      } else {
+        setWindowTimeLeft('00:00');
+      }
+    };
+    updateCounter();
+    const interval = setInterval(updateCounter, 1000);
+    return () => clearInterval(interval);
+  }, [attendanceWindowEnd]);
+
   return (
     <>{isLoading && <Loader/>}
       {isViewingTeamList && <TeamViewList/>}
@@ -399,8 +432,12 @@ const SelctingMemebrsList = ()=>{
 
       {/* Show group name if available and no fetch error */}
       {!fetchError && groupName && (
-        <div style={{ textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold', margin: '1.5rem 0 1rem 0', letterSpacing: '1px', color: '#2d3748' }}>
-          Group: {groupName}
+        <div className="attendance-group-timer-card">
+          <span className="attendance-group-name">Group: {groupName}</span>
+          <div className="attendance-timer-container">
+            <span className="attendance-timer-label">Time left to close attendance:</span>
+            <span className="attendance-timer-value">{windowTimeLeft}</span>
+          </div>
         </div>
       )}
 
