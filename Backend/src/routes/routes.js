@@ -19,6 +19,11 @@ import BanTeam from "../api/Master Admin/BanTeam.js";
 import FetchGroupsInfo from "../api/Master Admin/FetchGroupsInfo.js";
 import FetchAllGroupsInfo from "../api/Attendnace Admin/FetchAllGroupsInfo.js";
 
+import AddSet from "../api/Master Admin/Quiz Questions/AddSet.js";
+import AddRound from "../api/Master Admin/Quiz Questions/AddRound.js";
+import DeleteSet from "../api/Master Admin/Quiz Questions/DeleteSet.js";
+import DeleteRound from "../api/Master Admin/Quiz Questions/DeleteRound.js";
+
 // Attendnace Admin Task 
 import MarkTeamPresent from "../api/Attendnace Admin/MarkPresent.js";
 import DeleteOneAttendance from "../api/Attendnace Admin/DeleteOneAttendance.js";
@@ -53,6 +58,13 @@ router.post('/edit-start-time', MasterAdminTokenVerification, EditQuizStartingTi
 router.get('/get-start-time',MasterAdminTokenVerification, GetQuizStartingTime)
 router.post('/ban-team/:mobile', MasterAdminTokenVerification, BanTeam)
 router.get('/fetch-groups-info', MasterAdminTokenVerification,FetchGroupsInfo)
+
+router.post('/add-set', AddSet)
+router.post('/add-round', AddRound)
+router.delete('/delete-set/:setName', DeleteSet)
+router.delete('/delete-round/:setName/:roundName', DeleteRound)
+
+
 
 
 // Attendance Admin Routes 
