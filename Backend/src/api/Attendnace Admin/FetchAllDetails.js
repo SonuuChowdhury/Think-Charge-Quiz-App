@@ -109,8 +109,7 @@ FetchAllAttendanceDetails.post('/fetch-attendance', async (req, res) => {
 
     return res.status(200).json({
       totalTeams: allTeams.length,
-      reports: teamReports,
-      startTime: groupInfo.startTime,
+      reports: teamReports
     });
 
   } catch (error) {

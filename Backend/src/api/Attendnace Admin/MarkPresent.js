@@ -84,8 +84,27 @@ MarkTeamPresent.post('/mark-present', async (req, res) => {
       }
     }
 
-    // Use the already fetched QuizSettingsDetails for set assignment
-    const SetToBeAssigned = await GetSetNumber(QuizSettingsDetails.LastSetAssigned);
+    // Assign set based on participant's group name using the modified schema
+    let SetToBeAssigned;
+    if (QuizSettingsDetails && Array.isArray(QuizSettingsDetails.GroupSetAssignments)) {
+      // Find the assignment for the participant's group
+      const groupAssignment = QuizSettingsDetails.GroupSetAssignments.find(
+      g => g.groupName === participant.groupName
+      );
+      if (groupAssignment && groupAssignment.lastSetAssigned !== undefined) {
+      SetToBeAssigned = await GetSetNumber(groupAssignment.lastSetAssigned);
+      // Update the lastSetAssigned for this group
+      groupAssignment.lastSetAssigned = SetToBeAssigned;
+      } else {
+      // Fallback if group assignment not found
+      SetToBeAssigned = await GetSetNumber(QuizSettingsDetails.LastSetAssigned);
+      QuizSettingsDetails.LastSetAssigned = SetToBeAssigned;
+      }
+    } else {
+      // Fallback to old logic if GroupSetAssignments is not present
+      SetToBeAssigned = await GetSetNumber(QuizSettingsDetails.LastSetAssigned);
+      QuizSettingsDetails.LastSetAssigned = SetToBeAssigned;
+    }
 
     QuizSettingsDetails.LastSetAssigned = SetToBeAssigned;
     await QuizSettingsDetails.save();
