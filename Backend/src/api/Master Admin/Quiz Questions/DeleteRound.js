@@ -10,15 +10,15 @@ DeleteRound.delete('/delete-round/:setName/:roundName', async (req, res) => {
             return res.status(400).json({ message: 'Set name and round name are required.' });
         }
 
-        // Validate roundName format: R01, R02, R03, etc.
-        const roundNamePattern = /^R\d{2}$/;
-        if (!roundNamePattern.test(roundName)) {
-            return res.status(400).json({ message: 'Round name must be in the format R01, R02, R03, etc.' });
+        // Validate roundNumber: must be 1, 2, or 3
+        const roundNumToDelete = parseInt(roundName, 10);
+        if (isNaN(roundNumToDelete) || roundNumToDelete < 1 || roundNumToDelete > 3) {
+            return res.status(400).json({ message: 'Round number must be between 1 and 3.' });
         }
-        // Validate setName format: S01, S02, S03, etc.
-        const setNamePattern = /^S\d{2}$/;
+        // Validate setName: must be S01, S02, S03, or S04
+        const setNamePattern = /^S0[1-4]$/;
         if (!setNamePattern.test(setName)) {
-            return res.status(400).json({ message: 'Set name must be in the format S01, S02, S03, etc.' });
+            return res.status(400).json({ message: 'Set name must be S01, S02, S03, or S04.' });
         }
 
         // Find the quiz set by setName
@@ -28,11 +28,15 @@ DeleteRound.delete('/delete-round/:setName/:roundName', async (req, res) => {
         }
 
         // Remove the round from the quiz set
-        quizSet.rounds = quizSet.rounds.filter(round => round.roundNumber !== roundName);
+        quizSet.rounds = quizSet.rounds.filter(round => round.roundNumber !== roundNumToDelete);
+        // Reassign round numbers sequentially (1, 2, 3...)
+        quizSet.rounds.forEach((round, idx) => {
+            round.roundNumber = idx + 1;
+        });
         quizSet.totalRounds = quizSet.rounds.length; // Update total rounds count
         await quizSet.save();
 
-        res.status(200).json({ message: 'Round deleted successfully.', rounds: quizSet.rounds });
+        res.status(200).json({ message: 'Round deleted and rounds renumbered successfully.', rounds: quizSet.rounds });
     } catch (error) {
         res.status(500).json({ message: 'Error deleting round.', error: error.message });
     }

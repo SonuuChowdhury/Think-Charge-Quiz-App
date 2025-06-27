@@ -5,16 +5,22 @@ const AddSet = express.Router();
 
 AddSet.post('/add-set', async (req, res) => {
     try {
-        const { setName } = req.body;
-        if (!setName) {
-            return res.status(400).json({ message: 'setName is required.' });
+        // Fetch all existing sets
+        const existingSets = await QuestionsDetailsSchema.find({}, 'setName');
+        const setNames = existingSets.map(s => s.setName);
+        // Only allow up to S04
+        if (setNames.length >= 4) {
+            return res.status(400).json({ message: 'No more than 4 sets (S01-S04) can be created.' });
         }
-
-        // Validate setName format: S01, S02, S03, etc.
-        const setNamePattern = /^S\d{2}$/;
-        if (!setNamePattern.test(setName)) {
-            return res.status(400).json({ message: 'setName must be in the format S01, S02, S03, etc.' });
+        // Find the next available set name
+        let nextSetNumber = 1;
+        while (setNames.includes(`S0${nextSetNumber}`) && nextSetNumber <= 4) {
+            nextSetNumber++;
         }
+        if (nextSetNumber > 4) {
+            return res.status(400).json({ message: 'No more than 4 sets (S01-S04) can be created.' });
+        }
+        const setName = `S0${nextSetNumber}`;
 
         const newSet = new QuestionsDetailsSchema({
             setName,
@@ -24,7 +30,7 @@ AddSet.post('/add-set', async (req, res) => {
 
         await newSet.save();
 
-        res.status(201).json({ message: 'Quiz set created successfully with no questions.', set: newSet });
+        res.status(201).json({ message: `Quiz set ${setName} created successfully with no questions.`, set: newSet });
     } catch (error) {
         res.status(500).json({ message: 'Error creating quiz set.', error: error.message });
     }
