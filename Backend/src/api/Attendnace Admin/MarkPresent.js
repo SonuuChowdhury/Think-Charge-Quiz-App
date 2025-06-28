@@ -84,29 +84,25 @@ MarkTeamPresent.post('/mark-present', async (req, res) => {
       }
     }
 
-    // Assign set based on participant's group name using the modified schema
+    // Assign set based on participant's group name using the updated LastSetAssigned array
     let SetToBeAssigned;
-    if (QuizSettingsDetails && Array.isArray(QuizSettingsDetails.GroupSetAssignments)) {
-      // Find the assignment for the participant's group
-      const groupAssignment = QuizSettingsDetails.GroupSetAssignments.find(
+    if (QuizSettingsDetails && Array.isArray(QuizSettingsDetails.LastSetAssigned)) {
+      // Find the assignment object for the participant's group
+      let groupAssignment = QuizSettingsDetails.LastSetAssigned.find(
       g => g.groupName === participant.groupName
       );
-      if (groupAssignment && groupAssignment.lastSetAssigned !== undefined) {
+      if (!groupAssignment) {
+      // If not found, create a new assignment for this group
+      groupAssignment = { groupName: participant.groupName, lastSetAssigned: undefined };
+      QuizSettingsDetails.LastSetAssigned.push(groupAssignment);
+      }
       SetToBeAssigned = await GetSetNumber(groupAssignment.lastSetAssigned);
       // Update the lastSetAssigned for this group
       groupAssignment.lastSetAssigned = SetToBeAssigned;
-      } else {
-      // Fallback if group assignment not found
-      SetToBeAssigned = await GetSetNumber(QuizSettingsDetails.LastSetAssigned);
-      QuizSettingsDetails.LastSetAssigned = SetToBeAssigned;
-      }
     } else {
-      // Fallback to old logic if GroupSetAssignments is not present
-      SetToBeAssigned = await GetSetNumber(QuizSettingsDetails.LastSetAssigned);
-      QuizSettingsDetails.LastSetAssigned = SetToBeAssigned;
+      // Fallback if LastSetAssigned is not an array
+      SetToBeAssigned = await GetSetNumber();
     }
-
-    QuizSettingsDetails.LastSetAssigned = SetToBeAssigned;
     await QuizSettingsDetails.save();
 
     
