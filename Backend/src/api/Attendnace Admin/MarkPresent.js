@@ -127,6 +127,7 @@ MarkTeamPresent.post('/mark-present', async (req, res) => {
     return res.status(201).json({ msg: "Attendance marked successfully" });
 
   } catch (error) {
+    console.log(error)
     return res.status(500).json({ msg: "Server Error", error: error.message });
   }
 });
