@@ -61,11 +61,12 @@ router.post('/ban-team/:mobile', MasterAdminTokenVerification, BanTeam)
 router.get('/fetch-groups-info', MasterAdminTokenVerification,FetchGroupsInfo)
 
 
-router.post('/add-set', AddSet)
-router.post('/add-round', AddRound)
-router.delete('/delete-set/:setName', DeleteSet)
-router.delete('/delete-round/:setName/:roundName', DeleteRound)
-router.get('/fetch-all-set', FetchAllSet)
+//uncomment this when you want to use the quiz questions feature only in development mode
+// router.post('/add-set', AddSet)
+// router.post('/add-round', AddRound)
+// router.delete('/delete-set/:setName', DeleteSet)
+// router.delete('/delete-round/:setName/:roundName', DeleteRound)
+// router.get('/fetch-all-set', FetchAllSet)
 
 // Attendance Admin Routes 
 router.post('/fetch-attendance',AttendaceAdminTokenVerification,FetchAllAttendanceDetails)
