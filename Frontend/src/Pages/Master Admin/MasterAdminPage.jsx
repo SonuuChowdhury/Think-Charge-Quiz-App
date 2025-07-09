@@ -309,7 +309,7 @@ export default function MasterAdminPage() {
             <FontAwesomeIcon icon={faClock} />
             Schedule Quiz
           </button>
-          <button className="SideControlBarMainControlOptions">
+          <button className="SideControlBarMainControlOptions" onClick={()=>{alert("This feature is only available for developers")}}>
             <FontAwesomeIcon icon={faPen} />
             Edit Quiz Questions
           </button>
