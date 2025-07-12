@@ -4,7 +4,8 @@ import connectDB from '../../db/ConnectDB.js';
 const { loginCredentialsConnection } = await connectDB();
 
 const ResultsDetailsLayout = new mongoose.Schema({
-    mobile: { type: Number, required: true }, // Mobile number of the participant
+    mobile: { type: Number, required: true }, // Mobile number of the                                                                                                       participant
+    setAssigned:{ type: String}, // Set assigned to the participant (e.g., S01, S02, etc.)
     taskHistory: [{ type: String }], //constainsa code regarding evry task or activity performed by the participant 
     batteryStatus: { type: Number, required: true }, // Battery status of the participant quiz
     startedOn : { type: Date, required: true }, // Time when the quiz started
@@ -15,7 +16,7 @@ const ResultsDetailsLayout = new mongoose.Schema({
     numberOfWrongAttempts: { type: Number, default: 0 }, // Number of wrong attempts made by the participant
 });
 
-const ResultsDetailsSchema = loginCredentialsConnection.model('attendancedetails', ResultsDetailsLayout);
+const ResultsDetailsSchema = loginCredentialsConnection.model('resultdetails', ResultsDetailsLayout);
 export default ResultsDetailsSchema;
 
 

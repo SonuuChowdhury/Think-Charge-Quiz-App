@@ -19,11 +19,6 @@ import BanTeam from "../api/Master Admin/BanTeam.js";
 import FetchGroupsInfo from "../api/Master Admin/FetchGroupsInfo.js";
 import FetchAllGroupsInfo from "../api/Attendnace Admin/FetchAllGroupsInfo.js";
 
-import FetchAllSet from "../api/Master Admin/Quiz Questions/FetchAllSets.js";
-import AddSet from "../api/Master Admin/Quiz Questions/AddSet.js";
-import AddRound from "../api/Master Admin/Quiz Questions/AddRound.js";
-import DeleteSet from "../api/Master Admin/Quiz Questions/DeleteSet.js";
-import DeleteRound from "../api/Master Admin/Quiz Questions/DeleteRound.js";
 
 // Attendnace Admin Task 
 import MarkTeamPresent from "../api/Attendnace Admin/MarkPresent.js";
@@ -37,6 +32,7 @@ import FetchAllAttendanceDetails from "../api/Attendnace Admin/FetchAllDetails.j
 import VerifyLockOpenKey from "../api/Participants/Security/LockOpenKeyVerifcation.js";
 import GetPartcipantsCredentials from "../api/Login/PartcipantsLogin.js";
 import GetAttendanceStatus from "../api/Participants/Security/getAttendanceStatus.js";
+import StartQuiz from "../api/Participants/Security/StartQuiz.js";
 
 
 const router = Router();
@@ -45,6 +41,8 @@ const router = Router();
 router.get('/verify-key/:key',VerifyLockOpenKey)
 router.post('/login/participant', GetPartcipantsCredentials)
 router.post('/get-attendance-status',ParticipantTokenVerification, GetAttendanceStatus)
+router.post('/start-quiz',ParticipantTokenVerification, StartQuiz)
+
 
 // Admin Login 
 router.post('/login/admin',getAdminCredentials)
@@ -62,6 +60,13 @@ router.get('/fetch-groups-info', MasterAdminTokenVerification,FetchGroupsInfo)
 
 
 //uncomment this when you want to use the quiz questions feature only in development mode
+
+// import FetchAllSet from "../api/Master Admin/Quiz Questions/FetchAllSets.js";
+// import AddSet from "../api/Master Admin/Quiz Questions/AddSet.js";
+// import AddRound from "../api/Master Admin/Quiz Questions/AddRound.js";
+// import DeleteSet from "../api/Master Admin/Quiz Questions/DeleteSet.js";
+// import DeleteRound from "../api/Master Admin/Quiz Questions/DeleteRound.js";
+
 // router.post('/add-set', AddSet)
 // router.post('/add-round', AddRound)
 // router.delete('/delete-set/:setName', DeleteSet)
