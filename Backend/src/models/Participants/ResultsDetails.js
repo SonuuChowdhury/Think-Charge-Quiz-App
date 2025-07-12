@@ -7,6 +7,11 @@ const ResultsDetailsLayout = new mongoose.Schema({
     mobile: { type: Number, required: true }, // Mobile number of the team                                                                                                      participant
     setAssigned:{ type: String}, // Set assigned to the participant (e.g., S01, S02, etc.)
     taskHistory: [{ type: String }], //constainsa code regarding evry task or activity performed by the participant 
+    roundInfo:[{
+        roundNumber: { type: String, required: true }, // Round number (e.g., R1, R2, R3)]
+        startTime: { type: Date}, // Start time of the round
+        endTime: { type: Date }, // End time of the round
+    }],
     batteryStatus: { type: Number, required: true }, // Battery status of the participant quiz
     startedOn : { type: Date, required: true }, // Time when the quiz started
     submitedOn: { type: Date }, // Time when the quiz was completed

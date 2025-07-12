@@ -1,5 +1,6 @@
 import dotenv from 'dotenv'
 import jwt, { decode } from 'jsonwebtoken'
+import GetCureentIST from '../../Demo/GetCurrentIST.js'
 
 dotenv.config()
 
@@ -18,6 +19,11 @@ const ParticipantTokenVerificationWithINFOToken = async (req,res,next)=>{
                 // Check if the DetailsDecoded contains the required information
                 if(!DetailsDecoded || !DetailsDecoded.startTime|| !DetailsDecoded.setAssigned || !DetailsDecoded.quizEndTime || !DetailsDecoded.groupName){
                     return res.status(403).json({msg:'Unauthorized: Invalid Details Token'})
+                }
+                const now = await Date(GetCureentIST());
+                const endTime = await new Date(DetailsDecoded.quizEndTime);
+                if(now < endTime){
+                    return res.status(403).json({msg:'Unauthorized: Session Expired and the quiz has ended'})
                 }
                 next()
             }else{

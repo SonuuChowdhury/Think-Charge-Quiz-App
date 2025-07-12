@@ -17,7 +17,7 @@ StartQuiz.post('/start-quiz', async (req, res) => {
 
     try {
         // Find participant and get groupName
-        const participant = await ParticipantsDetails.findOne({ mobile: user._id });
+        const participant = await ParticipantsDetails.findOne({ _id: user._id });
         const participantAttendance = await AttendanceDetailsSchema.findOne({ mobile: user.mobile });
         if (!participant) {
             return res.status(404).json({ message: 'Participant not found' });  
@@ -64,7 +64,7 @@ StartQuiz.post('/start-quiz', async (req, res) => {
         if (!resultDoc) {
             resultDoc = new ResultsDetailsSchema({
                 mobile: user.mobile,
-                setAssigned: participant.setAssigned || '',
+                setAssigned: participantAttendance.setAssigned || '',
                 taskHistory: [],
                 batteryStatus: 100,
                 startedOn: now,
@@ -76,7 +76,7 @@ StartQuiz.post('/start-quiz', async (req, res) => {
             });
             await resultDoc.save();
         }
-        const token = await jwt.sign({groupName:groupName, startTime:startTime, quizEndTime: QuizEndTime,setAssigned: participant.setAssigned},process.env.JWT_SECRET,{expiresIn:'2h'})
+        const token = await jwt.sign({groupName:groupName, startTime:startTime, quizEndTime: QuizEndTime, setAssigned: participantAttendance.setAssigned},process.env.JWT_SECRET,{expiresIn:'2h'})
 
         return res.status(200).json({
             QuizDetailsToken: token,
