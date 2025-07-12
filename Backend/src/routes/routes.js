@@ -33,6 +33,7 @@ import VerifyLockOpenKey from "../api/Participants/Security/LockOpenKeyVerifcati
 import GetPartcipantsCredentials from "../api/Login/PartcipantsLogin.js";
 import GetAttendanceStatus from "../api/Participants/Security/getAttendanceStatus.js";
 import StartQuiz from "../api/Participants/Security/StartQuiz.js";
+import GetQuestions from "../api/Participants/Quiz/GetQuestions.js";
 
 
 const router = Router();
@@ -42,6 +43,8 @@ router.get('/verify-key/:key',VerifyLockOpenKey)
 router.post('/login/participant', GetPartcipantsCredentials)
 router.post('/get-attendance-status',ParticipantTokenVerification, GetAttendanceStatus)
 router.post('/start-quiz',ParticipantTokenVerification, StartQuiz)
+router.get('/get-next-question', ParticipantTokenVerification, GetQuestions )
+
 
 
 // Admin Login 

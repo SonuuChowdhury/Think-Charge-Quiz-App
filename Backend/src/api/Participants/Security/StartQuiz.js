@@ -4,12 +4,16 @@ import QuizManagementDetailsSchema from '../../../models/Admins/QuizManageMentDe
 import ResultsDetailsSchema from '../../../models/Participants/ResultsDetails.js';
 import GetCureentIST from '../../../../Demo/GetCurrentIST.js';
 import express from 'express';
+import jwt from  'jsonwebtoken'
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 const StartQuiz = express.Router();
 StartQuiz.use(express.json());
 
 StartQuiz.post('/start-quiz', async (req, res) => {
-    const user = req.user
+    const user = req.user;
 
     try {
         // Find participant and get groupName
@@ -53,6 +57,8 @@ StartQuiz.post('/start-quiz', async (req, res) => {
             return res.status(403).json({ message: 'Quiz window has closed for your group.' });
         }
 
+        let QuizEndTime = new Date(startTime.getTime() + 1 * 60 * 60 * 1000); // 1 hour after startTime
+
         // Initialize empty result document for participant if not exists
         let resultDoc = await ResultsDetailsSchema.findOne({ mobile: user.mobile });
         if (!resultDoc) {
@@ -70,8 +76,12 @@ StartQuiz.post('/start-quiz', async (req, res) => {
             });
             await resultDoc.save();
         }
+        const token = await jwt.sign({groupName:groupName, startTime:startTime, quizEndTime:QuizEndTime,setAssigned: participant.setAssigned},process.env.JWT_SECRET,{expiresIn:'2h'})
 
-        return res.status(200).json({ message: 'Quiz started successfully.' });
+        return res.status(200).json({
+            QuizDetailsToken: token,
+            message: 'Quiz started successfully.' 
+            });
     } catch (error) {
         return res.status(500).json({ message: 'Error starting quiz.', error: error.message });
     }
