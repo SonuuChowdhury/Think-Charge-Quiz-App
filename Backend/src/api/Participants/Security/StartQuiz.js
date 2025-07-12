@@ -57,7 +57,7 @@ StartQuiz.post('/start-quiz', async (req, res) => {
             return res.status(403).json({ message: 'Quiz window has closed for your group.' });
         }
 
-        let QuizEndTime = new Date(startTime.getTime() + 1 * 60 * 60 * 1000); // 1 hour after startTime
+        const QuizEndTime = new Date(startTime.getTime() + 1 * 60 * 60 * 1000); // 1 hour after startTime
 
         // Initialize empty result document for participant if not exists
         let resultDoc = await ResultsDetailsSchema.findOne({ mobile: user.mobile });
@@ -76,7 +76,7 @@ StartQuiz.post('/start-quiz', async (req, res) => {
             });
             await resultDoc.save();
         }
-        const token = await jwt.sign({groupName:groupName, startTime:startTime, quizEndTime:QuizEndTime,setAssigned: participant.setAssigned},process.env.JWT_SECRET,{expiresIn:'2h'})
+        const token = await jwt.sign({groupName:groupName, startTime:startTime, quizEndTime: QuizEndTime,setAssigned: participant.setAssigned},process.env.JWT_SECRET,{expiresIn:'2h'})
 
         return res.status(200).json({
             QuizDetailsToken: token,

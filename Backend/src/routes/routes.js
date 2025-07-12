@@ -6,6 +6,7 @@ import getAdminCredentials from "../api/Login/AdminLogin.js";
 import MasterAdminTokenVerification from "../middlewares/MasterAdminTokenVerification.js";
 import AttendaceAdminTokenVerification from "../middlewares/AttendanceAdminTokenVerify.js";
 import ParticipantTokenVerification from "../middlewares/ParticipantTokenVerify.js";
+import ParticipantTokenVerificationWithINFOToken from "../middlewares/ParticipantTokenVerificationWithINFOToken.js";
 
 // Master Admin Tasks
 import AddParticipant from "../api/Master Admin/AddParticipants.js";
@@ -43,7 +44,7 @@ router.get('/verify-key/:key',VerifyLockOpenKey)
 router.post('/login/participant', GetPartcipantsCredentials)
 router.post('/get-attendance-status',ParticipantTokenVerification, GetAttendanceStatus)
 router.post('/start-quiz',ParticipantTokenVerification, StartQuiz)
-router.get('/get-next-question', ParticipantTokenVerification, GetQuestions )
+router.get('/get-next-question', ParticipantTokenVerificationWithINFOToken, GetQuestions )
 
 
 
