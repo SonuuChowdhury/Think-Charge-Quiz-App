@@ -30,6 +30,17 @@ GetQuestions.get('/get-next-question', async (req, res) => {
         }
     }
 
+    if (nextRoundNumber==4) {
+        const PrevRoundCompleted = resultData.roundInfo.some(info => info.roundNumber === 'R3' && info.endTime !== null);
+        if (!PrevRoundCompleted) {
+            nextRoundNumber = 3;
+        }else{
+            return res.status(200).json({
+            message: 'All Rounds Completed successfully.'
+            }); 
+        }
+    }
+
     if(nextRoundNumber==1) {
         const StationaryData = await GenerateStationaryTaskData(userinfo.setAssigned, 'R1');
         const dynamicTaskData = await GenerateDynamicTaskData('start');
@@ -127,7 +138,7 @@ GetQuestions.get('/get-next-question', async (req, res) => {
             message: 'Round 3 Started successfully.',
             question: data
         })
-    }
+    } 
 
 });
 
