@@ -35,6 +35,7 @@ import GetPartcipantsCredentials from "../api/Login/PartcipantsLogin.js";
 import GetAttendanceStatus from "../api/Participants/Security/getAttendanceStatus.js";
 import StartQuiz from "../api/Participants/Security/StartQuiz.js";
 import GetQuestions from "../api/Participants/Quiz/GetQuestions.js";
+import GetHint from "../api/Participants/Quiz/GetHint.js";
 
 
 const router = Router();
@@ -45,6 +46,7 @@ router.post('/login/participant', GetPartcipantsCredentials)
 router.post('/get-attendance-status',ParticipantTokenVerification, GetAttendanceStatus)
 router.post('/start-quiz',ParticipantTokenVerification, StartQuiz)
 router.get('/get-next-question', ParticipantTokenVerificationWithINFOToken, GetQuestions )
+router.get('/get-hint', ParticipantTokenVerificationWithINFOToken, GetHint )
 
 
 
