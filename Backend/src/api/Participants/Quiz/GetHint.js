@@ -63,6 +63,7 @@ GetHint.get('/get-hint', async (req, res) => {
         if(!exists){
             battery = battery-4;
             resultData.batteryStatus = battery;
+            resultData.numberOfHintsUsed = resultData.numberOfHintsUsed + 1; // Increment the number of hints used
             await resultData.save();
         }
 
@@ -96,6 +97,7 @@ GetHint.get('/get-hint', async (req, res) => {
         if(!exists){
             battery = battery-4;
             resultData.batteryStatus = battery;
+            resultData.numberOfHintsUsed = resultData.numberOfHintsUsed + 1;
             await resultData.save();
         }
 
@@ -129,6 +131,7 @@ GetHint.get('/get-hint', async (req, res) => {
         if(!exists){
             battery = battery-4;
             resultData.batteryStatus = battery;
+            resultData.numberOfHintsUsed = resultData.numberOfHintsUsed + 1;
             await resultData.save();
         }
 
