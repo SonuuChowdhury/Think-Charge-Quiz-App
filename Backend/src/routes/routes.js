@@ -48,7 +48,7 @@ router.post('/login/participant', GetPartcipantsCredentials)
 router.post('/get-attendance-status',ParticipantTokenVerification, GetAttendanceStatus)
 router.post('/start-quiz',ParticipantTokenVerification, StartQuiz)
 router.get('/get-next-question', ParticipantTokenVerificationWithINFOToken, GetQuestions )
-router.get('get-result-data', ParticipantTokenVerificationWithINFOToken, GetQuizResultData)
+router.get('/get-result-data', ParticipantTokenVerificationWithINFOToken, GetQuizResultData)
 router.get('/get-hint', ParticipantTokenVerificationWithINFOToken, GetHint )
 router.put('/check-answer', ParticipantTokenVerificationWithINFOToken, CheckAnswer )
 
