@@ -3,6 +3,8 @@ import './ParticipantInstructionPage.css';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaUsers } from 'react-icons/fa';
+import axios from 'axios';
+import Loader from '../../../Components/Loader/Loader';
 
 
 export default function ParticipantInstructionPage() {
@@ -19,6 +21,7 @@ export default function ParticipantInstructionPage() {
   });
   const [timer, setTimer] = useState('00:00');
   const [canStart, setCanStart] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Timer logic
   useEffect(() => {
@@ -54,10 +57,31 @@ export default function ParticipantInstructionPage() {
   };
 
   // Start Quiz logic (navigate or trigger quiz start)
-  const handleStartQuiz = () => {
-    if (canStart) {
-      navigate('/participant/game'); // Change route as needed
-    }
+  const handleStartQuiz = async () => {
+    try {
+        setIsLoading(true);
+        const token = localStorage.getItem('participant-token');
+        const response = await axios.post('https://think-charge-quiz-app.onrender.com/start-quiz', {}, {
+          headers: {
+            'participant-token': token
+          }
+        });
+
+        if (response.status === 200) {
+          const QuizDetailsToken = response.data.QuizDetailsToken;
+          localStorage.setItem('QuizDetailsToken', JSON.stringify(QuizDetailsToken));
+          navigate(`/participant/quiz?Dtoken=${encodeURIComponent(QuizDetailsToken)}&Ptoken=${encodeURIComponent(token)}`);
+        }else if(response.status===404 || response.status===403 || response.status===400){
+          alert(response.data.message);
+        } else {  
+          alert(response.data.message || 'Failed to start the quiz. Please try again later.');
+        }
+      } catch (error) {
+        console.error('Error starting the quiz:', error);
+        alert("Failed to start the quiz.")
+      } finally {
+        setIsLoading(false);
+      }
   };
 
   // Format start time for display
@@ -77,6 +101,7 @@ export default function ParticipantInstructionPage() {
   return (
     <div className="participant-instruction-root participant-instruction-theme-vibrant">
       {/* Navbar */}
+      {isLoading && <Loader />}
       <nav className="participant-instruction-navbar">
         <div className="participant-instruction-navbar-left">
           <FaUsers className="participant-instruction-group-logo" />
