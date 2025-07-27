@@ -2,6 +2,7 @@ import express from 'express';
 import QuizManagementDetailsSchema from '../../models/Admins/QuizManageMentDetails.js';
 import AttendanceDetailsSchema from '../../models/Participants/AttendanceDetails.js';
 import ParticipantsDetails from '../../models/Participants/ParticipantsDetails.js';
+import ResultsDetailsSchema from '../../models/Participants/ResultsDetails.js';
 
 const EditQuizStartingTime = express.Router();
 
@@ -113,6 +114,8 @@ EditQuizStartingTime.post('/edit-start-time', async (req, res) => {
     const participantMobiles = participants.map(p => p.mobile);
     // 2. Delete attendance entries for these mobiles
     await AttendanceDetailsSchema.deleteMany({ mobile: { $in: participantMobiles } });
+    // 3. Delete all result entries for these mobiles
+    await ResultsDetailsSchema.deleteMany({ mobile: { $in: participantMobiles } });
     // --- END RESET ---
 
     return res.status(isNewGroup ? 201 : 200).json({
