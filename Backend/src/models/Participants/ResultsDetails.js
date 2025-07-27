@@ -44,12 +44,12 @@ Example format (joined string):
 Dynamic data:
 1. Battery Drained (e.g., 00, 01, 02, ..., 12, ...)
 2. Task Code:
-    UH - used hint
-    WN - wrong numeric answer
-    WM - wrong mcq answer
-    CN - correct numeric answer
-    CM - correct mcq answer
-    XX - ignore
+    UH - used hint (-4)
+    WN - wrong numeric answer (-2)
+    WM - wrong mcq answer (-2)
+    CN - correct numeric answer (+0)
+    CM - correct mcq answer (+0)
+    XX - ignore 
 3. Frontend Security Interruption Data:
     FL - Frontend Locked (only used if there is a security breach)
     FO - Frontend Unlocked
