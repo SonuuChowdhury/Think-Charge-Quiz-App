@@ -36,7 +36,8 @@ GetQuestions.get('/get-next-question', async (req, res) => {
             nextRoundNumber = 3;
         }else{
             return res.status(200).json({
-            message: 'All Rounds Completed successfully.'
+            message: 'All Rounds Completed successfully.',
+            isAllRoundsCompleted: true
             }); 
         }
     }
