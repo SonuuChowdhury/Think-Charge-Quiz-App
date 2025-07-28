@@ -9,6 +9,7 @@ import Loader from "../../../Components/Loader/Loader";
 import { useLocation } from "react-router-dom";
 
 export default function ParticipantQuizPage() {
+  const [isInfoFixed, setIsInfoFixed] = useState(false);
   const navigate = useNavigate();
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
   const [startTime, setStartTime] = useState(
@@ -30,6 +31,15 @@ export default function ParticipantQuizPage() {
   const [isFetchingHint, setIsFetchingHint] = useState(false);
   const [hint, setHint] = useState("");
   const [showHintDialog, setShowHintDialog] = useState(false);
+  const [TotalHintUsed, setTotalHintUsed] = useState(0);
+  const [TotalWrongAttempt, setTotalWrongAttempt] = useState(0);
+  const [answer, setAnswer] = useState("");
+
+  const [isAnswerCorrectDialogeBoxOpen, setIsAnswerCorrectDialogeBoxOpen] =
+    useState(false);
+  const [isAnswerWrongDialogeBoxOpen, setIsAnswerWrongDialogeBoxOpen] =
+    useState(false);
+  const [answerCheckingResponse, setAnswerCheckingResponse] = useState({});
 
   const location = useLocation();
   const query = new URLSearchParams(location.search);
@@ -100,8 +110,11 @@ export default function ParticipantQuizPage() {
       );
 
       if (response.status === 200) {
-        const Question = response.data.question[0];
-        setQuestion(Question);
+        response.data.isAllRoundsCompleted && setIsQuizCompleted(true);
+        if(response.data.question ){
+          const Question = response.data.question[0];
+          setQuestion(Question);
+        }
       } else if (
         response.status === 404 ||
         response.status === 403 ||
@@ -115,8 +128,49 @@ export default function ParticipantQuizPage() {
         );
       }
     } catch (error) {
-      console.error("Error fetching the quiz Question", error);
+      console.log("Error fetching the quiz Question", error);
       alert("Failed to Fetch The quiz question.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Start Quiz logic (navigate or trigger quiz start)
+  const FetchQuizResultData = async () => {
+    try {
+      setIsLoading(true);
+      const response = await axios.get(
+        "https://think-charge-quiz-app.onrender.com/get-result-data",
+        {
+          headers: {
+            "participant-token": Ptoken,
+            "participant-details-token": Dtoken,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        const data = response.data;
+        setBatteryLevel(Number(data.battery) || batteryLevel);
+        setTotalHintUsed(Number(data.numberOfHintsUsed) || TotalHintUsed);
+        setTotalWrongAttempt(
+          Number(data.numberOfWrongAttempts) || TotalWrongAttempt
+        );
+      } else if (
+        response.status === 404 ||
+        response.status === 403 ||
+        response.status === 400
+      ) {
+        alert(response.data.message);
+      } else {
+        alert(
+          response.data.message ||
+            "Failed to Fetch the quiz result details. Please try again later."
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching the result data", error);
+      alert("Error fetching the result data");
     } finally {
       setIsLoading(false);
     }
@@ -137,7 +191,12 @@ export default function ParticipantQuizPage() {
       );
       if (response.status === 200) {
         setHint(response.data?.hint || "");
-        console.log(response)
+        setTotalHintUsed(
+          Number(response.data.numberOfHintsUsed) || TotalHintUsed
+        );
+        setTotalWrongAttempt(
+          Number(response.data.numberOfWrongAttempts) || TotalWrongAttempt
+        );
         setBatteryLevel(Number(response.data?.battery) || batteryLevel);
       } else if (
         response.status === 404 ||
@@ -160,13 +219,195 @@ export default function ParticipantQuizPage() {
     }
   };
 
+  // Check answer of the questions
+  const CheckAnswer = async () => {
+    setIsLoading(true);
+    try {
+      const response = await axios.put(
+        "https://think-charge-quiz-app.onrender.com/check-answer",
+        {
+          answer: answer,
+        },
+        {
+          headers: {
+            "participant-token": Ptoken,
+            "participant-details-token": Dtoken,
+          },
+        }
+      );
+      if (response.status === 200) {
+        setAnswerCheckingResponse(response.data);
+        setTotalHintUsed(response.data.numberOfHintsUsed || TotalHintUsed);
+        setTotalWrongAttempt(response.data.numberOfWrongAttempts || TotalWrongAttempt);
+        setBatteryLevel(Number(response.data.battery) || batteryLevel);
+        setIsAnswerCorrectDialogeBoxOpen(true);
+      } else if (response.status === 404) {
+        alert(response.data.message);
+      } else if (response.status === 400) {
+        setAnswerCheckingResponse(response.data);
+        setTotalHintUsed(response.data.numberOfHintsUsed || TotalHintUsed);
+        setTotalWrongAttempt(response.data.numberOfWrongAttempts || TotalWrongAttempt);
+        setBatteryLevel(Number(response.data.battery) || batteryLevel);
+        setIsAnswerWrongDialogeBoxOpen(true);
+      } else {
+        alert(
+          response.data.message ||
+            "Failed to Check the answer. Please try again later."
+        );
+      }
+    } catch (error) {
+      if (error.response) {
+        if (error.response.status == 404) {
+          alert(error.data.message);
+        } else if (error.response.status == 400) {
+          setAnswerCheckingResponse(error.response.data);
+          setTotalHintUsed(error.response.data.numberOfHintsUsed || TotalHintUsed);
+          setTotalWrongAttempt(error.response.data.numberOfWrongAttempts || TotalHintUsed);
+          setBatteryLevel(Number(error.response.data.battery) || batteryLevel);
+          setIsAnswerWrongDialogeBoxOpen(true);
+        }
+      }else{
+        alert("Failed to Check the answer. Please try again later.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     FetchQuestion();
-    // eslint-disable-next-line
+    FetchQuizResultData();
+    // Sticky info area logic
+    const handleScroll = () => {
+      const navbar = document.querySelector('.participant-instruction-navbar');
+      const infoArea = document.querySelector('.participantQuiz-info-area');
+      if (!navbar || !infoArea) return;
+      const navbarRect = navbar.getBoundingClientRect();
+      // If navbar bottom is above the top of the viewport, fix info area
+      if (navbarRect.bottom <= 0) {
+        setIsInfoFixed(true);
+      } else {
+        setIsInfoFixed(false);
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
     <>
+      {isAnswerCorrectDialogeBoxOpen && (
+        <div className="participantQuiz-answer-dialog">
+          <div className="participantQuiz-answer-dialog-content">
+            <h2 className="participantQuiz-answer-dialog-title">
+              Correct Answer
+            </h2>
+            <p className="participantQuiz-answer-dialog-message">
+              {answerCheckingResponse?.message
+                ? answerCheckingResponse.message
+                : "Your answer is correct!"}
+            </p>
+            <button
+              className="participantQuiz-next-question-btn"
+              onClick={() => {
+                setIsAnswerCorrectDialogeBoxOpen(false);
+                setAnswer("");
+                setHint("");
+                FetchQuestion();
+              }}
+            >
+              NEXT QUESTION
+            </button>
+          </div>
+        </div>
+      )}
+
+      {isQuizCompleted && (
+        <div className="participantQuiz-answer-dialog">
+          <div className="participantQuiz-answer-dialog-content">
+            <h2 className="participantQuiz-answer-dialog-title">
+              Quiz Completed
+            </h2>
+            <p className="participantQuiz-answer-dialog-message">
+              The Results will be available soon. Thank you for participating!
+            </p>
+            <button
+              className="participantQuiz-next-question-btn"
+              onClick={() => {
+                confirmLogout();
+              }}
+            >
+              EXIT
+            </button>
+          </div>
+        </div>
+      )}
+
+      {isAnswerWrongDialogeBoxOpen && (
+        <div className="participantQuiz-answer-dialog">
+          <div className="participantQuiz-answer-dialog-content">
+            <h2 className="participantQuiz-answer-dialog-title">
+              Wrong Answer
+            </h2>
+            <p className="participantQuiz-answer-dialog-message">
+              {answerCheckingResponse?.message
+                ? answerCheckingResponse.message
+                : "Your answer is wrong!"}
+            </p>
+            <p className="participantQuiz-answer-dialog-message">
+              {answerCheckingResponse?.AttemptUsed
+                ? `Attemt Used:${answerCheckingResponse.AttemptUsed}`
+                : "You Have only 2 attempts to answer!"}
+            </p>
+            <p className="participantQuiz-answer-dialog-message">
+              {answerCheckingResponse.AttemptUsed
+                ? `Attemt Remaining:${
+                    2 - Number(answerCheckingResponse.AttemptUsed)
+                  }`
+                : "Use it wisely!"}
+            </p>
+            {answerCheckingResponse.AttemptUsed == 2 && (
+              <>
+                <p className="participantQuiz-answer-dialog-message">
+                  You have reached the limit of attempts for this question.
+                </p>
+                <button
+                  className="participantQuiz-next-question-btn"
+                  onClick={() => {
+                    setIsAnswerCorrectDialogeBoxOpen(false);
+                    setIsAnswerWrongDialogeBoxOpen(false);
+                    setAnswer("");
+                    setHint("");
+                    FetchQuestion();
+                  }}
+                >
+                  NEXT QUESTION
+                </button>
+              </>
+            )}
+            {answerCheckingResponse.AttemptUsed == 1 && (
+              <>
+                <p className="participantQuiz-answer-dialog-message">
+                  You have One more attempt left for this question.
+                </p>
+                <button
+                  className="participantQuiz-next-question-btn"
+                  onClick={() => {
+                    setIsAnswerCorrectDialogeBoxOpen(false);
+                    setIsAnswerWrongDialogeBoxOpen(false);
+                    setAnswer("");
+
+
+                  }}
+                >
+                  TRY AGAIN
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
       {isLoading && <Loader />}
       <nav className="participant-instruction-navbar">
         <div className="participant-instruction-navbar-left">
@@ -249,8 +490,7 @@ export default function ParticipantQuizPage() {
                           >
                             {num}
                           </span>
-                        )
-                        }
+                        )}
                       </div>
                     );
                   })}
@@ -274,6 +514,16 @@ export default function ParticipantQuizPage() {
             </div>
             <div className="participantQuiz-assets-box">
               <span className="participantQuiz-assets-label">Assets</span>
+              {question?.codeAssets?(
+                <p>
+                  {question.codeAssets}
+                </p>
+                
+                  
+                )
+              : (
+                <span className="participantQuiz-assets-empty">No Code Assets</span>
+              )}
               {question?.assets && question.assets.length > 0 ? (
                 question.assets.map((asset, idx) => (
                   <img
@@ -284,16 +534,31 @@ export default function ParticipantQuizPage() {
                   />
                 ))
               ) : (
-                <span className="participantQuiz-assets-empty">No Assets</span>
+                <span className="participantQuiz-assets-empty">No Image Assets</span>
               )}
             </div>
           </div>
           <span className="participantQuiz-hint-heading">Hint</span>
-          <div className={`participantQuiz-hint-box${hint ? ' participantQuiz-hint-opened' : ' participantQuiz-hint-locked'}${isFetchingHint ? ' participantQuiz-hint-fetching' : ''}`}
+          <div
+            className={`participantQuiz-hint-box${
+              hint
+                ? " participantQuiz-hint-opened"
+                : " participantQuiz-hint-locked"
+            }${isFetchingHint ? " participantQuiz-hint-fetching" : ""}`}
             onClick={() => !hint && !isFetchingHint && setShowHintDialog(true)}
-            style={{ cursor: !hint && !isFetchingHint ? 'pointer' : 'default', opacity: isFetchingHint ? 0.7 : 1 }}
+            style={{
+              cursor: !hint && !isFetchingHint ? "pointer" : "default",
+              opacity: isFetchingHint ? 0.7 : 1,
+            }}
           >
-            {!hint && <span className="participantQuiz-hint-lock-icon" title="Hint Locked">🔒</span>}
+            {!hint && (
+              <span
+                className="participantQuiz-hint-lock-icon"
+                title="Hint Locked"
+              >
+                🔒
+              </span>
+            )}
             {hint ? (
               <span className="participantQuiz-hint-value">{hint}</span>
             ) : (
@@ -307,25 +572,52 @@ export default function ParticipantQuizPage() {
           </div>
           <div className="participantQuiz-options-row">
             <span className="participantQuiz-options-heading">Options</span>
-            {question?.options &&
+            {question?.questionType === "Numerical" ? (
+              <input
+                type="number"
+                className="participantQuiz-numeric-input"
+                value={answer}
+                onChange={(e) => setAnswer(e.target.value)}
+                placeholder="Enter your answer"
+                style={{
+                  width: "200px",
+                  padding: "0.5rem",
+                  fontSize: "1rem",
+                  borderRadius: "6px",
+                  border: "1px solid #b2ebf2",
+                  marginTop: "0.5rem",
+                }}
+              />
+            ) : (
+              question?.options &&
               question.options.map((opt, idx) => (
                 <label className="participantQuiz-option-label" key={idx}>
                   <input
                     type="radio"
                     name="participantQuiz-option"
                     className="participantQuiz-option-radio"
+                    value={opt}
+                    checked={answer === opt}
+                    onChange={() => setAnswer(opt)}
                   />
                   <span className="participantQuiz-option-text">{opt}</span>
                 </label>
-              ))}
+              ))
+            )}
           </div>
           <div className="participantQuiz-action-row">
-            <button className="participantQuiz-submit-btn">SUBMIT</button>
+            <button
+              className="participantQuiz-submit-btn"
+              onClick={CheckAnswer}
+              disabled={!answer || answer === ""}
+            >
+              SUBMIT
+            </button>
             <button className="participantQuiz-skip-btn">SKIP</button>
           </div>
         </div>
         {/* Right: Info & Stats Area */}
-        <div className="participantQuiz-info-area">
+        <div className={`participantQuiz-info-area${isInfoFixed ? ' participantQuiz-info-area-fixed' : ''}`}>
           <div className="participantQuiz-battery-box">
             <span className="participantQuiz-battery-label">
               Battery {batteryLevel}%
@@ -352,13 +644,17 @@ export default function ParticipantQuizPage() {
               <span className="participantQuiz-info-label">
                 Total Hints Used:
               </span>
-              <span className="participantQuiz-info-value">0</span>
+              <span className="participantQuiz-info-value">
+                {TotalHintUsed}
+              </span>
             </div>
             <div>
               <span className="participantQuiz-info-label">
                 Total Wrong Attempts:
               </span>
-              <span className="participantQuiz-info-value">0</span>
+              <span className="participantQuiz-info-value">
+                {TotalWrongAttempt}
+              </span>
             </div>
           </div>
         </div>
@@ -397,11 +693,24 @@ export default function ParticipantQuizPage() {
           <div className="participantQuiz-dialog">
             <div className="participantQuiz-dialog-title">Reveal Hint?</div>
             <div className="participantQuiz-dialog-message">
-              Fetching this hint will depreciate <b>4% battery</b>.<br />Are you sure you want to continue?
+              Fetching this hint will depreciate <b>4% battery</b>.<br />
+              Are you sure you want to continue?
             </div>
             <div className="participantQuiz-dialog-actions">
-              <button className="participantQuiz-dialog-cancel" onClick={() => setShowHintDialog(false)} disabled={isFetchingHint}>Cancel</button>
-              <button className="participantQuiz-dialog-confirm" onClick={FetchHints} disabled={isFetchingHint}>Get Hint</button>
+              <button
+                className="participantQuiz-dialog-cancel"
+                onClick={() => setShowHintDialog(false)}
+                disabled={isFetchingHint}
+              >
+                Cancel
+              </button>
+              <button
+                className="participantQuiz-dialog-confirm"
+                onClick={FetchHints}
+                disabled={isFetchingHint}
+              >
+                Get Hint
+              </button>
             </div>
           </div>
         </div>
